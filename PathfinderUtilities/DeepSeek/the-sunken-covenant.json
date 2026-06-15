@@ -1,0 +1,503 @@
+{
+  "$schema": "https://adventure-maker-by-act.local/schemas/module-export/v1/module-export.schema.json",
+  "formatVersion": "1.0.0",
+  "exportedAt": "2026-06-10T14:46:35.739150",
+  "generator": {
+    "name": "AdventureMakerByAct Module Generator",
+    "version": "1.0.0",
+    "url": "https://github.com/edmund-landgraf/AdventureMakerByAct"
+  },
+  "module": {
+    "id": "ba26ec2d-0d4c-42cb-881d-3b6b49d60fbe",
+    "title": "The Sunken Covenant",
+    "subtitle": "A Pathfinder 2e Adventure for Levels 1–12",
+    "levelRange": "1-12",
+    "setting": "The Shattered Coast & The Drowned Isles",
+    "previewCssUrl": "/uploads/ba26ec2d-0d4c-42cb-881d-3b6b49d60fbe/preview.css",
+    "coverArt": [
+      {
+        "id": "4f8ab840-3ab8-4805-b851-0334c27887c8",
+        "url": "/uploads/ba26ec2d-0d4c-42cb-881d-3b6b49d60fbe/cover.jpg",
+        "mimeType": "image/jpeg",
+        "caption": "The heroes approach the sunken temple",
+        "sortOrder": 0
+      }
+    ],
+    "createdAt": "2026-06-10T14:46:35.739150",
+    "updatedAt": "2026-06-10T14:46:35.739150",
+    "narratives": [
+      {
+        "id": "97ab9858-b86c-4429-9127-48fd94aec696",
+        "title": "Adventure Summary",
+        "format": "markdown",
+        "content": "# The Sunken Covenant\n\nAn ancient pact between sea and stone has been broken. The tide rises, and drowned things stir. From level 1 to 12, the heroes must reclaim five elemental seals before the Abyssal Maw consumes the coast.\n\n- **Act I (Levels 1-3):** Salt and Shadow — A fishing village's plea.\n- **Act II (Levels 4-6):** The Churning Depths — Exploring sunken ruins.\n- **Act III (Levels 7-8):** The Silt King's Court — Politics in a drowned city.\n- **Act IV (Levels 9-10):** The Obsidian Trench — Descent into darkness.\n- **Act V (Levels 11-12):** The Abyssal Maw — Final confrontation.",
+        "sortOrder": 0
+      },
+      {
+        "id": "8bf7bd1d-4f08-4188-8711-1002911fa620",
+        "title": "Adventure Background",
+        "format": "html",
+        "content": "<p>Five centuries ago, the sea-elves and shore-dwarves forged the Covenant of Tides, binding a primordial sea entity known as the Drowned King. Five seals—each a fusion of coral and rune-metal—held him beneath the waves. But an earthquake shattered the central seal, and now his cult, the Abyssal Maw, works to free him entirely. Only a new band of heroes can restore the covenant.</p>",
+        "sortOrder": 1
+      },
+      {
+        "id": "5956f73b-f63b-4706-bdf1-a7f0ab0e4034",
+        "title": "Player Hook",
+        "format": "html",
+        "content": "<p><em>Read aloud:</em> The salt wind carries more than mist today. A wounded sea-elf staggers into your camp, gasping one word before collapsing: \"Covenant.\" In her clenched fist, a coral keystone pulses with dying light. The tide is rising. The Drowned King stirs. And you are the only ones who can seal him again.</p>",
+        "sortOrder": 2
+      }
+    ],
+    "artifacts": [
+      {
+        "id": "67ff2241-b4af-4ae7-8e7b-84e4495bf4bc",
+        "type": "handout",
+        "title": "Player's Primer",
+        "payload": {
+          "format": "html",
+          "content": "<div class=\"handout\"><h2>Welcome to the Shattered Coast</h2><p>This adventure spans levels 1 to 12. Choose characters with ties to the sea, dwarven runes, or eldritch lore. Expect underwater combat, political intrigue, and epic confrontations.</p></div>"
+        },
+        "sortOrder": 0
+      },
+      {
+        "id": "f1af3172-bac6-4759-bd99-a71a96645d6f",
+        "type": "sidebar",
+        "title": "GM Brief — The Drowned King",
+        "payload": {
+          "format": "html",
+          "content": "<div class=\"sidebar\"><p><strong>Campaign Secrets:</strong> The Drowned King is not truly evil — he was betrayed. A clever party might negotiate rather than destroy. The High Priest Kaelen is his corrupted former champion.</p></div>"
+        },
+        "sortOrder": 1
+      }
+    ],
+    "containers": [
+      {
+        "id": "a9cecc19-8ae3-4caf-9f82-eec8db0403b2",
+        "type": "act",
+        "title": "Act 1 — Salt and Shadow",
+        "slug": "act-1",
+        "sortOrder": 0,
+        "metadata": {
+          "levelRange": "1-3"
+        },
+        "narratives": [
+          {
+            "id": "18be05f8-7d6f-4f97-b1b1-0899f5d982e1",
+            "title": "Overview",
+            "format": "html",
+            "content": "<p>Levels 1-3. The village of Saltwhisper is plagued by salt zombies and a rising tide. The heroes discover a hidden sea-cave leading to the first seal. They must defeat cultists and recover the keystone to restore the covenant.</p>",
+            "sortOrder": 0
+          }
+        ],
+        "artifacts": [],
+        "children": [
+          {
+            "id": "159ae71c-06f2-43c3-b021-dcd94c874383",
+            "type": "scene",
+            "title": "Saltwhisper Village",
+            "slug": "saltwhisper",
+            "sortOrder": 0,
+            "narratives": [
+              {
+                "id": "df7dac62-2849-4b6d-b2b7-2e8ad875af3e",
+                "title": "Main",
+                "format": "html",
+                "content": "<p>Wooden huts on stilts, a perpetually weeping sky. The village elder, Mora Tidecaller, offers 100 gp per PC to investigate the salt-crusted corpses that rise from the bay at night. The bell tower holds a Bellflower chalk mark — a plea for help from the abolitionist network.</p>",
+                "sortOrder": 0
+              }
+            ],
+            "artifacts": [
+              {
+                "id": "ea697ff6-02b1-4cd1-ad9a-4ac8d252f1dd",
+                "type": "map",
+                "title": "Saltwhisper Village Map",
+                "payload": {
+                  "url": "/uploads/ba26ec2d-0d4c-42cb-881d-3b6b49d60fbe/saltwhisper_map.png",
+                  "mimeType": "image/png",
+                  "caption": "The village and surrounding marsh",
+                  "source": "upload"
+                },
+                "sortOrder": 0
+              }
+            ],
+            "children": [
+              {
+                "id": "b915944e-1882-4fe8-8f1b-b9dd8c5de289",
+                "type": "encounter",
+                "title": "Combat — Night Tide Rising",
+                "sortOrder": 0,
+                "metadata": {
+                  "tags": [
+                    "combat"
+                  ],
+                  "level": 1
+                },
+                "narratives": [
+                  {
+                    "id": "2bebae32-2901-4b32-8330-b6ab6f5de33c",
+                    "title": "Main",
+                    "format": "html",
+                    "content": "<h3>Encounter A: Salt Zombies (3)</h3><p>At midnight, three salt-crusted zombies shamble out of the surf, attacking the village's drying racks. The heroes must defeat them before they ruin the winter catch. The zombies rise from the bay each night until the seal is restored.</p>",
+                    "sortOrder": 0
+                  }
+                ],
+                "artifacts": [
+                  {
+                    "id": "3926d83f-c8a7-424f-b894-949b18d62355",
+                    "type": "monster_block",
+                    "title": "Salt Zombie",
+                    "payload": {
+                      "format": "html",
+                      "content": "<div class=\"stat-block\"><h3>Salt Zombie (Creature 1)</h3><p><strong>Perception</strong> +3; darkvision</p><p><strong>AC</strong> 12; <strong>Fort</strong> +6, <strong>Ref</strong> +2, <strong>Will</strong> +3</p><p><strong>HP</strong> 20, negative healing</p><p><strong>Speed</strong> 30 feet</p><p><strong>Melee</strong> fist +6, Damage 1d6+2 bludgeoning plus salt crust</p><p><strong>Salt Crust</strong> A creature hit by a salt zombie must succeed at a DC 14 Fortitude save or be sickened 1.</p></div>"
+                    },
+                    "sortOrder": 0
+                  }
+                ],
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": "b5eb934b-fff9-46a9-a0ed-b1fccefe4b93",
+            "type": "subscene",
+            "title": "Tidecaller's Grotto",
+            "slug": "tidecaller's-grotto",
+            "sortOrder": 0,
+            "narratives": [
+              {
+                "id": "24087721-7448-429e-8c25-3d68d3dae3ee",
+                "title": "Main",
+                "format": "html",
+                "content": "<p>Beyond a waterfall inside a sea-cave, the grotto holds a broken rune-pillar — the first seal. A giant hermit crab (Creature 2) has made its lair here. Repairing the seal requires a keystone held by the cult's local leader, a half-elf fanatic named Vess.</p>",
+                "sortOrder": 0
+              }
+            ],
+            "artifacts": [
+              {
+                "id": "00f4012e-ef8c-42fa-ab77-b433fc65d7af",
+                "type": "map",
+                "title": "Tidecaller's Grotto Map",
+                "payload": {
+                  "url": "/uploads/ba26ec2d-0d4c-42cb-881d-3b6b49d60fbe/grotto_map.jpg",
+                  "mimeType": "image/png",
+                  "caption": "",
+                  "source": "upload"
+                },
+                "sortOrder": 0
+              }
+            ],
+            "children": [
+              {
+                "id": "356c41b2-9997-4393-8add-03deaf0f907c",
+                "type": "encounter",
+                "title": "Haunt — Echoes of the Covenant",
+                "sortOrder": 0,
+                "metadata": {
+                  "tags": [
+                    "haunt"
+                  ],
+                  "level": 2
+                },
+                "narratives": [
+                  {
+                    "id": "1858cf64-06e8-496c-83e5-f7fce0315cd2",
+                    "title": "Main",
+                    "format": "html",
+                    "content": "<h3>Haunt: The Broken Oath (Severe 2)</h3><p>When anyone touches the broken pillar, ghostly dwarves and sea-elves reenact the betrayal that cracked the seal. A DC 16 Occultism or Religion check can quell the haunt. Failure deals 2d6 mental damage and sickens all for 1 minute.</p>",
+                    "sortOrder": 0
+                  }
+                ],
+                "artifacts": [
+                  {
+                    "id": "22de06c7-7b05-43f5-a9bb-418525c08424",
+                    "type": "trap",
+                    "title": "The Broken Oath",
+                    "payload": {
+                      "format": "html",
+                      "content": "<div class=\"trap\"><h3>Haunt: Echoes of Betrayal (Severe 2)</h3><p><strong>Stealth</strong> DC 18 (trained) to notice ghostly auras</p><p><strong>Description</strong> Ghostly dwarves and sea-elves reenact the betrayal</p><p><strong>Disable</strong> DC 16 Religion or Occultism to quell the spirits</p><p><strong>Reset</strong> 1 hour</p><p><strong>Effect</strong> 2d6 mental damage (DC 18 Will save) plus sickened 1 on failure</p></div>"
+                    },
+                    "sortOrder": 0
+                  }
+                ],
+                "children": []
+              },
+              {
+                "id": "53142aa0-6131-4f3f-a716-d86a89db3ec2",
+                "type": "encounter",
+                "title": "Combat — Cultist Ambush",
+                "sortOrder": 0,
+                "metadata": {
+                  "tags": [
+                    "combat"
+                  ],
+                  "level": 3
+                },
+                "narratives": [
+                  {
+                    "id": "e46ec353-1c49-467c-a617-971c8d0a3344",
+                    "title": "Main",
+                    "format": "html",
+                    "content": "<p>After the haunt, three Abyssal Maw cultists (cultist 1, two cultist 0) and a brine shark (Creature 3) burst from a tidal pool. They carry the keystone. The leader, Vess, wears an iron rose brooch — a symbol of the slaver network.</p>",
+                    "sortOrder": 0
+                  }
+                ],
+                "artifacts": [
+                  {
+                    "id": "16c23f48-6975-4ac0-8415-d5fcb0cfc7c7",
+                    "type": "treasure",
+                    "title": "Keystone of the First Seal",
+                    "payload": {
+                      "format": "markdown",
+                      "content": "**Keystone** (minor relic): A coral-and-rune stone that, when placed in the pillar, restores the seal. Also functions as a *talisman of the sea* (once, activate to breathe water for 1 hour)."
+                    },
+                    "sortOrder": 0
+                  }
+                ],
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "93ad9e15-22e6-46e7-a315-403bc2e235fb",
+        "type": "act",
+        "title": "Act 2 — The Churning Depths",
+        "slug": "act-2",
+        "sortOrder": 1,
+        "metadata": {
+          "levelRange": "4-6"
+        },
+        "narratives": [
+          {
+            "id": "53a19efc-02af-4a44-8758-795cec060188",
+            "title": "Overview",
+            "format": "html",
+            "content": "<p>Levels 4-6. The second seal lies in a sunken temple half a mile offshore. The party must acquire potions of underwater breathing from a sea-elf enclave and navigate the Kelpforest Maze. Giant octopus and reef sharks guard the path.</p>",
+            "sortOrder": 0
+          }
+        ],
+        "artifacts": [],
+        "children": []
+      },
+      {
+        "id": "e1d9b89f-53ad-4220-8e03-99a6c4302041",
+        "type": "act",
+        "title": "Act 3 — The Silt King's Court",
+        "slug": "act-3",
+        "sortOrder": 2,
+        "metadata": {
+          "levelRange": "7-8"
+        },
+        "narratives": [
+          {
+            "id": "983bde54-6a4c-4ed0-ad80-f9e48d3e3823",
+            "title": "Overview",
+            "format": "html",
+            "content": "<p>Levels 7-8. The third seal is hidden in the Drowned City of Ys, ruled by the Silt King — a ghostly morgh (Creature 9) who holds the keystone. The heroes must win a political contest or fight through court intrigues.</p>",
+            "sortOrder": 0
+          }
+        ],
+        "artifacts": [],
+        "children": []
+      },
+      {
+        "id": "8fc95c92-48f9-4c06-b5e6-084a8a1083ee",
+        "type": "act",
+        "title": "Act 4 — The Obsidian Trench",
+        "slug": "act-4",
+        "sortOrder": 3,
+        "metadata": {
+          "levelRange": "9-10"
+        },
+        "narratives": [
+          {
+            "id": "f9474a56-dbfb-4f63-8906-1cf5f7fc76f3",
+            "title": "Overview",
+            "format": "html",
+            "content": "<p>Levels 9-10. The fourth seal is at the bottom of a volcanic trench, guarded by a colony of grindylows (Creature 8) and their deepsee stalker (Creature 10) leader. The pressure requires a cap of water breathing or similar magic.</p>",
+            "sortOrder": 0
+          }
+        ],
+        "artifacts": [],
+        "children": []
+      },
+      {
+        "id": "c1383fbb-1ce2-405f-adfc-ba2f126b4023",
+        "type": "act",
+        "title": "Act 5 — The Abyssal Maw",
+        "slug": "act-5",
+        "sortOrder": 4,
+        "metadata": {
+          "levelRange": "11-12"
+        },
+        "narratives": [
+          {
+            "id": "118099e3-684f-4643-bf62-7da0a6474693",
+            "title": "Overview",
+            "format": "html",
+            "content": "<p>Levels 11-12. The final seal is inside a living volcano's caldera, where the Abyssal Maw cult attempts a ritual to summon the Drowned King. The party must stop the high priest and destroy the heart of the covenant — or remake it.</p>",
+            "sortOrder": 0
+          }
+        ],
+        "artifacts": [],
+        "children": []
+      }
+    ],
+    "pcs": [
+      {
+        "id": "194211a8-ee3e-48fb-aecb-56a2996e9968",
+        "name": "Example PC",
+        "sortOrder": 0,
+        "metadata": {
+          "ancestry": "Undine",
+          "class": "Cleric of Gozreh"
+        },
+        "narratives": [
+          {
+            "id": "73e22e85-0f64-4a4c-88a2-68e00f42425c",
+            "title": "Character Sheet",
+            "format": "html",
+            "content": "<div class=\"pf2e-sheet\"><h2>Example PC</h2><p>Full character sheet would go here.</p></div>",
+            "sortOrder": 0
+          },
+          {
+            "id": "df8d879c-1bd6-41a5-b2c7-a49eb6b6ff29",
+            "title": "Backstory",
+            "format": "markdown",
+            "content": "Born of a sea-elf and a shore-dwarf, this character carries the blood of both covenant peoples. They feel the shifting tides as a physical ache and have dreamed of the Drowned King since childhood.",
+            "sortOrder": 1
+          }
+        ],
+        "artifacts": [
+          {
+            "id": "ad7fca3a-0fd2-4a0f-8e82-deedc78afe8f",
+            "type": "handout",
+            "title": "Pathfinder Character Sheet (Remaster)",
+            "payload": {
+              "assetRef": "pf2e-remaster-character-sheet",
+              "url": "https://paizo.com/pathfinder/character-sheet",
+              "mimeType": "application/pdf",
+              "format": "external",
+              "publisher": "Paizo",
+              "rulesSystem": "PF2e"
+            },
+            "sortOrder": 0
+          },
+          {
+            "id": "c3d74e98-58ba-4cf0-aa46-bf36aee39610",
+            "type": "image",
+            "title": "Portrait",
+            "payload": {
+              "url": "/uploads/ba26ec2d-0d4c-42cb-881d-3b6b49d60fbe/pc_portrait.png",
+              "mimeType": "image/png",
+              "role": "portrait"
+            },
+            "sortOrder": 1
+          }
+        ],
+        "sidequests": [
+          {
+            "id": "238a2b33-fd39-4936-af48-73bfec8e1501",
+            "title": "The Ancestral Debt",
+            "sortOrder": 0,
+            "narratives": [
+              {
+                "id": "03630284-cf54-4076-8ec1-8ef7f7911474",
+                "title": "Quest Details",
+                "format": "html",
+                "content": "<p>Your ancestor broke the covenant. To atone, you must personally place the final keystone. Doing so earns a permanent +2 status bonus to all saves against water effects.</p>",
+                "sortOrder": 0
+              }
+            ],
+            "artifacts": []
+          }
+        ]
+      }
+    ],
+    "npcs": [
+      {
+        "id": "9bc9f7a3-b563-44eb-a163-ae54fa5e8224",
+        "name": "Mora Tidecaller",
+        "sortOrder": 0,
+        "metadata": {
+          "role": "Village Elder",
+          "ancestry": "Human"
+        },
+        "summary": "A weathered human woman in her 60s, Mora is the last living descendant of the original pact-binders.",
+        "narratives": [
+          {
+            "id": "639a1a08-97cf-4f2f-8592-7f9b75ba3822",
+            "title": "Description",
+            "format": "html",
+            "content": "<div class=\"npc\"><h2>Mora Tidecaller (NG female human commoner 3)</h2><p><strong>Appearance:</strong> Gray braids, deep blue robes, a staff carved with waves.</p><p><strong>Personality:</strong> Warm but burdened by guilt. She offers free lodging and the village's trust.</p></div>",
+            "sortOrder": 0
+          }
+        ],
+        "artifacts": []
+      },
+      {
+        "id": "da1ce02a-d766-49bb-b831-99e0c3444939",
+        "name": "High Priest Kaelen",
+        "sortOrder": 0,
+        "metadata": {
+          "role": "Leader of the Abyssal Maw",
+          "ancestry": "Human (undead)"
+        },
+        "summary": "A drowned fanatic who sold his soul to the Drowned King. He believes freeing the entity will wash away civilization's sins.",
+        "narratives": [
+          {
+            "id": "f3783934-b9c9-4538-b35f-986f85e9b6e1",
+            "title": "Description",
+            "format": "html",
+            "content": "<div class=\"npc\"><h2>High Priest Kaelen (LE male human undead cleric 12)</h2><p><strong>Appearance:</strong> Waterlogged robes, seaweed hair, eyes that glow like deep-sea anglers.</p><p><strong>Quotes:</strong> \"The tide cares not for your kingdoms. It will reclaim all.\"</p></div>",
+            "sortOrder": 0
+          }
+        ],
+        "artifacts": []
+      }
+    ]
+  },
+  "assets": [
+    {
+      "url": "/uploads/ba26ec2d-0d4c-42cb-881d-3b6b49d60fbe/cover.jpg",
+      "mimeType": "image/jpeg",
+      "role": "cover",
+      "referencedBy": [
+        "module.coverArt.0.url"
+      ]
+    },
+    {
+      "url": "/uploads/ba26ec2d-0d4c-42cb-881d-3b6b49d60fbe/preview.css",
+      "mimeType": "text/css",
+      "role": "stylesheet",
+      "referencedBy": [
+        "module.previewCssUrl"
+      ]
+    },
+    {
+      "url": "/uploads/ba26ec2d-0d4c-42cb-881d-3b6b49d60fbe/pc_portrait.png",
+      "mimeType": "image/png",
+      "role": "image",
+      "referencedBy": [
+        "module.pc.Example PC.artifact.portrait"
+      ]
+    },
+    {
+      "url": "/uploads/ba26ec2d-0d4c-42cb-881d-3b6b49d60fbe/saltwhisper_map.png",
+      "mimeType": "image/png",
+      "role": "map",
+      "referencedBy": [
+        "module.act.1.scene.Saltwhisper Village.map"
+      ]
+    },
+    {
+      "url": "/uploads/ba26ec2d-0d4c-42cb-881d-3b6b49d60fbe/grotto_map.jpg",
+      "mimeType": "image/png",
+      "role": "map",
+      "referencedBy": [
+        "module.act.1.scene.Tidecaller's Grotto.map"
+      ]
+    }
+  ]
+}

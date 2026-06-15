@@ -1,0 +1,172 @@
+{
+  "title": "The Sunken Covenant",
+  "subtitle": "A Pathfinder 2e Adventure for Levels 1–12",
+  "levelRange": "1-12",
+  "setting": "The Shattered Coast & The Drowned Isles",
+  "coverArt": {
+    "url": "cover.jpg",
+    "caption": "The heroes approach the sunken temple"
+  },
+  "narratives": {
+    "summary": {
+      "title": "Adventure Summary",
+      "format": "markdown",
+      "content": "# The Sunken Covenant\n\nAn ancient pact between sea and stone has been broken. The tide rises, and drowned things stir. From level 1 to 12, the heroes must reclaim five elemental seals before the Abyssal Maw consumes the coast.\n\n- **Act I (Levels 1-3):** Salt and Shadow — A fishing village's plea.\n- **Act II (Levels 4-6):** The Churning Depths — Exploring sunken ruins.\n- **Act III (Levels 7-8):** The Silt King's Court — Politics in a drowned city.\n- **Act IV (Levels 9-10):** The Obsidian Trench — Descent into darkness.\n- **Act V (Levels 11-12):** The Abyssal Maw — Final confrontation."
+    },
+    "background": {
+      "title": "Adventure Background",
+      "format": "html",
+      "content": "<p>Five centuries ago, the sea-elves and shore-dwarves forged the Covenant of Tides, binding a primordial sea entity known as the Drowned King. Five seals—each a fusion of coral and rune-metal—held him beneath the waves. But an earthquake shattered the central seal, and now his cult, the Abyssal Maw, works to free him entirely. Only a new band of heroes can restore the covenant.</p>"
+    },
+    "hook": {
+      "title": "Player Hook",
+      "format": "html",
+      "content": "<p><em>Read aloud:</em> The salt wind carries more than mist today. A wounded sea-elf staggers into your camp, gasping one word before collapsing: \"Covenant.\" In her clenched fist, a coral keystone pulses with dying light. The tide is rising. The Drowned King stirs. And you are the only ones who can seal him again.</p>"
+    }
+  },
+  "artifacts": {
+    "playerPrimer": {
+      "type": "handout",
+      "title": "Player's Primer",
+      "content": "<div class=\"handout\"><h2>Welcome to the Shattered Coast</h2><p>This adventure spans levels 1 to 12. Choose characters with ties to the sea, dwarven runes, or eldritch lore. Expect underwater combat, political intrigue, and epic confrontations.</p></div>"
+    },
+    "gmBrief": {
+      "type": "sidebar",
+      "title": "GM Brief — The Drowned King",
+      "content": "<div class=\"sidebar\"><p><strong>Campaign Secrets:</strong> The Drowned King is not truly evil — he was betrayed. A clever party might negotiate rather than destroy. The High Priest Kaelen is his corrupted former champion.</p></div>"
+    }
+  },
+  "acts": [
+    {
+      "number": 1,
+      "title": "Salt and Shadow",
+      "slug": "act-1",
+      "levelRange": "1-3",
+      "overview": "<p>Levels 1-3. The village of Saltwhisper is plagued by salt zombies and a rising tide. The heroes discover a hidden sea-cave leading to the first seal. They must defeat cultists and recover the keystone to restore the covenant.</p>",
+      "scenes": [
+        {
+          "name": "Saltwhisper Village",
+          "type": "scene",
+          "slug": "saltwhisper",
+          "description": "<p>Wooden huts on stilts, a perpetually weeping sky. The village elder, Mora Tidecaller, offers 100 gp per PC to investigate the salt-crusted corpses that rise from the bay at night. The bell tower holds a Bellflower chalk mark — a plea for help from the abolitionist network.</p>",
+          "maps": [
+            {
+              "title": "Saltwhisper Village Map",
+              "filename": "saltwhisper_map.png",
+              "caption": "The village and surrounding marsh"
+            }
+          ],
+          "encounters": [
+            {
+              "name": "Night Tide Rising",
+              "type": "combat",
+              "level": 1,
+              "description": "<h3>Encounter A: Salt Zombies (3)</h3><p>At midnight, three salt-crusted zombies shamble out of the surf, attacking the village's drying racks. The heroes must defeat them before they ruin the winter catch. The zombies rise from the bay each night until the seal is restored.</p>",
+              "monsters": [
+                {
+                  "name": "Salt Zombie",
+                  "creature_level": 1,
+                  "statblock": "<div class=\"stat-block\"><h3>Salt Zombie (Creature 1)</h3><p><strong>Perception</strong> +3; darkvision</p><p><strong>AC</strong> 12; <strong>Fort</strong> +6, <strong>Ref</strong> +2, <strong>Will</strong> +3</p><p><strong>HP</strong> 20, negative healing</p><p><strong>Speed</strong> 30 feet</p><p><strong>Melee</strong> fist +6, Damage 1d6+2 bludgeoning plus salt crust</p><p><strong>Salt Crust</strong> A creature hit by a salt zombie must succeed at a DC 14 Fortitude save or be sickened 1.</p></div>"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Tidecaller's Grotto",
+          "type": "subscene",
+          "description": "<p>Beyond a waterfall inside a sea-cave, the grotto holds a broken rune-pillar — the first seal. A giant hermit crab (Creature 2) has made its lair here. Repairing the seal requires a keystone held by the cult's local leader, a half-elf fanatic named Vess.</p>",
+          "maps": [
+            {
+              "title": "Tidecaller's Grotto Map",
+              "filename": "grotto_map.jpg"
+            }
+          ],
+          "encounters": [
+            {
+              "name": "Echoes of the Covenant",
+              "type": "haunt",
+              "level": 2,
+              "description": "<h3>Haunt: The Broken Oath (Severe 2)</h3><p>When anyone touches the broken pillar, ghostly dwarves and sea-elves reenact the betrayal that cracked the seal. A DC 16 Occultism or Religion check can quell the haunt. Failure deals 2d6 mental damage and sickens all for 1 minute.</p>",
+              "trap": {
+                "name": "The Broken Oath",
+                "content": "<div class=\"trap\"><h3>Haunt: Echoes of Betrayal (Severe 2)</h3><p><strong>Stealth</strong> DC 18 (trained) to notice ghostly auras</p><p><strong>Description</strong> Ghostly dwarves and sea-elves reenact the betrayal</p><p><strong>Disable</strong> DC 16 Religion or Occultism to quell the spirits</p><p><strong>Reset</strong> 1 hour</p><p><strong>Effect</strong> 2d6 mental damage (DC 18 Will save) plus sickened 1 on failure</p></div>"
+              }
+            },
+            {
+              "name": "Cultist Ambush",
+              "type": "combat",
+              "level": 3,
+              "description": "<p>After the haunt, three Abyssal Maw cultists (cultist 1, two cultist 0) and a brine shark (Creature 3) burst from a tidal pool. They carry the keystone. The leader, Vess, wears an iron rose brooch — a symbol of the slaver network.</p>",
+              "treasure": {
+                "name": "Keystone of the First Seal",
+                "description": "**Keystone** (minor relic): A coral-and-rune stone that, when placed in the pillar, restores the seal. Also functions as a *talisman of the sea* (once, activate to breathe water for 1 hour)."
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "title": "The Churning Depths",
+      "slug": "act-2",
+      "levelRange": "4-6",
+      "overview": "<p>Levels 4-6. The second seal lies in a sunken temple half a mile offshore. The party must acquire potions of underwater breathing from a sea-elf enclave and navigate the Kelpforest Maze. Giant octopus and reef sharks guard the path.</p>",
+      "scenes": []
+    },
+    {
+      "number": 3,
+      "title": "The Silt King's Court",
+      "slug": "act-3",
+      "levelRange": "7-8",
+      "overview": "<p>Levels 7-8. The third seal is hidden in the Drowned City of Ys, ruled by the Silt King — a ghostly morgh (Creature 9) who holds the keystone. The heroes must win a political contest or fight through court intrigues.</p>",
+      "scenes": []
+    },
+    {
+      "number": 4,
+      "title": "The Obsidian Trench",
+      "slug": "act-4",
+      "levelRange": "9-10",
+      "overview": "<p>Levels 9-10. The fourth seal is at the bottom of a volcanic trench, guarded by a colony of grindylows (Creature 8) and their deepsee stalker (Creature 10) leader. The pressure requires a cap of water breathing or similar magic.</p>",
+      "scenes": []
+    },
+    {
+      "number": 5,
+      "title": "The Abyssal Maw",
+      "slug": "act-5",
+      "levelRange": "11-12",
+      "overview": "<p>Levels 11-12. The final seal is inside a living volcano's caldera, where the Abyssal Maw cult attempts a ritual to summon the Drowned King. The party must stop the high priest and destroy the heart of the covenant — or remake it.</p>",
+      "scenes": []
+    }
+  ],
+  "pcs": [
+    {
+      "name": "Example PC",
+      "ancestry": "Undine",
+      "class": "Cleric of Gozreh",
+      "backstory": "Born of a sea-elf and a shore-dwarf, this character carries the blood of both covenant peoples. They feel the shifting tides as a physical ache and have dreamed of the Drowned King since childhood.",
+      "portrait": "pc_portrait.png",
+      "sidequest": {
+        "name": "The Ancestral Debt",
+        "description": "<p>Your ancestor broke the covenant. To atone, you must personally place the final keystone. Doing so earns a permanent +2 status bonus to all saves against water effects.</p>"
+      }
+    }
+  ],
+  "npcs": [
+    {
+      "name": "Mora Tidecaller",
+      "role": "Village Elder",
+      "ancestry": "Human",
+      "summary": "A weathered human woman in her 60s, Mora is the last living descendant of the original pact-binders.",
+      "description": "<div class=\"npc\"><h2>Mora Tidecaller (NG female human commoner 3)</h2><p><strong>Appearance:</strong> Gray braids, deep blue robes, a staff carved with waves.</p><p><strong>Personality:</strong> Warm but burdened by guilt. She offers free lodging and the village's trust.</p></div>"
+    },
+    {
+      "name": "High Priest Kaelen",
+      "role": "Leader of the Abyssal Maw",
+      "ancestry": "Human (undead)",
+      "summary": "A drowned fanatic who sold his soul to the Drowned King. He believes freeing the entity will wash away civilization's sins.",
+      "description": "<div class=\"npc\"><h2>High Priest Kaelen (LE male human undead cleric 12)</h2><p><strong>Appearance:</strong> Waterlogged robes, seaweed hair, eyes that glow like deep-sea anglers.</p><p><strong>Quotes:</strong> \"The tide cares not for your kingdoms. It will reclaim all.\"</p></div>"
+    }
+  ]
+}

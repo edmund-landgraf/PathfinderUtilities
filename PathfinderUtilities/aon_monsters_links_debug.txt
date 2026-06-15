@@ -1,0 +1,167 @@
+javascript:void(0);	|||
+/	Home
+/Actions.aspx	Actions/Activities
+/Afflictions.aspx	Afflictions
+/Ancestries.aspx	Ancestries
+/Archetypes.aspx	Archetypes
+/Backgrounds.aspx	Backgrounds
+/Classes.aspx	Classes
+/Conditions.aspx	Conditions
+/Creatures.aspx	Creatures
+/Companions.aspx	Companions
+/Familiars.aspx	Familiars
+/Equipment.aspx	Equipment
+/Feats.aspx	Feats
+/Hazards.aspx	Hazards
+/MythicCallings.aspx	Mythic
+/Rules.aspx	Rules
+/Setting.aspx	Setting
+/Skills.aspx	Skills
+/Spells.aspx	Spells/Rituals
+/Traits.aspx	Traits
+/Licenses.aspx	Licenses
+/Sources.aspx	Sources
+/ContactUs.aspx	Contact Us
+/Contributors.aspx	Contributors
+/Support.aspx	Support the Archives
+/	Archives of Nethys
+/Afflictions.aspx	Afflictions
+javascript:void(0);	Character Creation +
+/Ancestries.aspx	Ancestries
+/Archetypes.aspx	Archetypes
+/Backgrounds.aspx	Backgrounds
+/Classes.aspx	Classes
+/Feats.aspx	Feats
+/Skills.aspx	Skills
+/Companions.aspx	Companions
+/Familiars.aspx	Familiars
+/Creatures.aspx	Creatures
+/Equipment.aspx	Equipment
+/Setting.aspx	Setting
+/Spells.aspx	Spells/Rituals
+javascript:void(0);	Rules +
+/Actions.aspx	Actions/Activities
+/Conditions.aspx	Conditions
+/Rules.aspx	Rules
+/Traits.aspx	Traits
+/Hazards.aspx	Hazards
+javascript:void(0);	Mythic +
+/Rules.aspx?ID=3320	Mythic Rules
+/MythicCallings.aspx	Callings
+/MythicFeats.aspx	Mythic Feats
+/MythicDestinies.aspx	Destinies
+/MythicSpells.aspx	Mythic Spells
+/MythicRituals.aspx	Mythic Rituals
+/Sources.aspx	Sources
+javascript:void(0);	About the Archives +
+/Licenses.aspx	Licenses
+/ContactUs.aspx	Contact Us
+/Contributors.aspx	Contributors
+/Support.aspx	Support the Archives
+https://2e.aonprd.com	
+https://www.aonprd.com	
+https://www.aonsrd.com	
+https://2e.aonsrd.com	
+/	Archives of Nethys
+https://aonprd.com	
+https://aonsrd.com	
+https://2e.aonsrd.com	
+https://www.aonprd.com	
+https://2e.aonprd.com	
+https://www.aonsrd.com	
+https://2e.aonsrd.com	
+Creatures.aspx	All Creatures
+MonsterAbilities.aspx	Abilities
+Monsters.aspx	Monsters
+NPCs.aspx	NPCs
+Monsters.aspx	All
+MonsterFamilies.aspx?Type=M	Families
+MonsterTemplates.aspx	Templates
+Monsters.aspx?Letter=A	A
+Monsters.aspx?Letter=B	B
+Monsters.aspx?Letter=C	C
+Monsters.aspx?Letter=D	D
+Monsters.aspx?Letter=E	E
+Monsters.aspx?Letter=F	F
+Monsters.aspx?Letter=G	G
+Monsters.aspx?Letter=H	H
+Monsters.aspx?Letter=I	I
+Monsters.aspx?Letter=J	J
+Monsters.aspx?Letter=K	K
+Monsters.aspx?Letter=L	L
+Monsters.aspx?Letter=M	M
+Monsters.aspx?Letter=N	N
+Monsters.aspx?Letter=O	O
+Monsters.aspx?Letter=P	P
+Monsters.aspx?Letter=Q	Q
+Monsters.aspx?Letter=R	R
+Monsters.aspx?Letter=S	S
+Monsters.aspx?Letter=T	T
+Monsters.aspx?Letter=U	U
+Monsters.aspx?Letter=V	V
+Monsters.aspx?Letter=W	W
+Monsters.aspx?Letter=X	X
+Monsters.aspx?Letter=Y	Y
+Monsters.aspx?Letter=Z	Z
+Monsters.aspx?Letter=&sort=name-asc&display=short	Short
+Monsters.aspx?Letter=&sort=name-asc&display=table&columns=creature_family+source+rarity+size+trait+level+hp+ac+fortitude+reflex+will+perception+sense+speed	Table
+Monsters.aspx?Letter=&sort=name-asc&display=grouped&group-fields=level&link-layout=horizontal	Grouped by Level
+Monsters.aspx?Letter=&sort=name-asc&display=grouped&group-fields=creature_family&link-layout=horizontal	Grouped by Creature Family
+Monsters.aspx?Letter=&sort=name-asc&display=grouped&group-fields=size&link-layout=horizontal	Grouped by Size
+mailto:nethys@archivesofnethys.com	Site Owner: Rose-Winds LLC (Blake Davis)
+https://twitter.com/NethysArchives	
+/Ancestries.aspx	Ancestries
+/Archetypes.aspx	Archetypes
+/Backgrounds.aspx	Backgrounds
+/Classes.aspx	Classes
+/Skills.aspx	Skills
+/Companions.aspx	Companions
+/Familiars.aspx	Familiars
+/Equipment.aspx	All Equipment
+/Equipment.aspx?Category=1	Adventuring Gear
+/Equipment.aspx?Category=6	Alchemical Items
+/Armor.aspx	Armor
+/Equipment.aspx?Category=21	Held Items
+/Equipment.aspx?Category=23	Runes
+/Shields.aspx	Shields
+/Weapons.aspx	Weapons
+/Equipment.aspx?Category=41	Worn Items
+/Feats.aspx	All Feats
+/Feats.aspx?Traits=78	General
+/Feats.aspx?Traits=78&NoSkills=True	General (No Skill)
+/Feats.aspx?Traits=144	Skill
+/Afflictions.aspx	Afflictions
+/Creatures.aspx	Creatures
+/Hazards.aspx	Hazards
+/Rules.aspx	All Rules
+/Actions.aspx	Actions/Activities
+/Conditions.aspx	Conditions
+/GMScreen.aspx	GM Screen
+/PlayersGuide.aspx	Player's Guide
+/Traits.aspx	Traits
+/Sources.aspx	Sources
+/Setting.aspx?Adventure=true	Adventures
+/Articles.aspx	Articles
+/Deities.aspx	Deities
+/Domains.aspx	Domains
+/Languages.aspx	Languages
+/Planes.aspx	Planes
+/Setting.aspx?Group=40	Scenarios
+/Spells.aspx	All Spells
+/Spells.aspx?Tradition=1	Arcane
+/Spells.aspx?Tradition=2	Divine
+/Spells.aspx?Tradition=3	Occult
+/Spells.aspx?Tradition=4	Primal
+/Spells.aspx?Focus=true	Focus Spells
+/Rituals.aspx	Rituals
+/Rules.aspx?ID=3320	Mythic Rules
+/MythicCallings.aspx	Callings
+/MythicFeats.aspx	Mythic Feats
+/MythicDestinies.aspx	Destinies
+/MythicSpells.aspx	Mythic Spells
+/MythicRituals.aspx	Mythic Rituals
+/ContactUs.aspx	Contact Us
+/Contributors.aspx	Contributors
+/Licenses.aspx	Licenses
+/Support.aspx	Support the Archives
+javascript:void(0)	×
