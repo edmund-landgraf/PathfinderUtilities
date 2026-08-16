@@ -403,7 +403,7 @@ def insert_equipment_row(cur, values, cache):
     return cur.fetchone()[0]
 
 
-def existing_equipment_id(cur, aon_key, aon_url, cache):
+def existing_equipment_id(cur, aon_key, aon_url, name, cache):
     if has_column(cur, "pf2", "Equipment", "AonKey", cache) and aon_key:
         cur.execute("""
             SELECT TOP 1 EquipmentId
@@ -415,6 +415,25 @@ def existing_equipment_id(cur, aon_key, aon_url, cache):
 
         if row:
             return row[0]
+
+        # Variants often share one Equipment.aspx?ID= URL. If we have a key,
+        # do not collapse onto a sibling row that only matches AonUrl.
+        return None
+
+    if has_column(cur, "pf2", "Equipment", "AonUrl", cache) and aon_url and name:
+        cur.execute("""
+            SELECT TOP 1 EquipmentId
+            FROM pf2.Equipment
+            WHERE Name = ?
+              AND AonUrl = ?
+        """, name, aon_url)
+
+        row = cur.fetchone()
+
+        if row:
+            return row[0]
+
+        return None
 
     if has_column(cur, "pf2", "Equipment", "AonUrl", cache) and aon_url:
         cur.execute("""
@@ -597,7 +616,7 @@ def insert_equipment_from_elastic(cur, src, cache):
         "ScrapeVersion": "aon-elastic-equipment-v1"
     }
 
-    equipment_id = existing_equipment_id(cur, aon_key, aon_url, cache)
+    equipment_id = existing_equipment_id(cur, aon_key, aon_url, name, cache)
 
     if not equipment_id:
         equipment_id = insert_equipment_row(cur, values, cache)

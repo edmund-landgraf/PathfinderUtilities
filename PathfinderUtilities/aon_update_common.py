@@ -440,44 +440,63 @@ def aon_numeric_id(src, fallback_url=None):
     return aon_id_from_url(fallback_url)
 
 
+def elastic_key(src):
+    return clean(first_existing(src or {}, "id", "_elastic_id"))
+
+
+def is_named_variant_key(raw_id):
+    if not raw_id or "-" not in str(raw_id):
+        return False
+
+    return to_int(str(raw_id).rsplit("-", 1)[-1]) is None
+
+
+def stored_aon_id(src, fallback_url=None):
+    raw_id = elastic_key(src)
+
+    if is_named_variant_key(raw_id):
+        return None
+
+    return aon_numeric_id(src or {}, fallback_url)
+
+
 def local_url(entry):
     return "/" + entry["relative_url"].lstrip("/")
 
 
 def existing_row_id(cur, kind, entry, src):
     url = local_url(entry)
-    aon_id = aon_numeric_id(src or {}, entry["url"])
-
-    if kind == "equipment":
-        aon_key = clean(first_existing(src or {}, "id", "_elastic_id"))
-
-        if aon_key:
-            cur.execute("""
-                SELECT TOP 1 EquipmentId
-                FROM pf2.Equipment
-                WHERE AonKey = ?
-            """, aon_key)
-            row = cur.fetchone()
-
-            if row:
-                return row[0]
-
-            return None
-
-        cur.execute("""
-            SELECT TOP 1 EquipmentId
-            FROM pf2.Equipment
-            WHERE AonUrl IN (?, ?)
-        """, url, entry["url"])
-        row = cur.fetchone()
-        return row[0] if row else None
+    name = clean(entry.get("name")) or clean((src or {}).get("name"))
+    aon_key = elastic_key(src)
 
     table_map = {
+        "equipment": ("pf2.Equipment", "EquipmentId"),
         "feat": ("pf2.Feat", "FeatId"),
         "spell": ("pf2.Spell", "SpellId"),
         "monster": ("pf2.Monster", "MonsterId"),
     }
     table_name, id_column = table_map[kind]
+
+    if kind == "equipment" and aon_key:
+        cur.execute(f"""
+            SELECT TOP 1 {id_column}
+            FROM {table_name}
+            WHERE AonKey = ?
+        """, aon_key)
+        row = cur.fetchone()
+        return row[0] if row else None
+
+    if name:
+        cur.execute(f"""
+            SELECT TOP 1 {id_column}
+            FROM {table_name}
+            WHERE Name = ?
+              AND AonUrl IN (?, ?)
+        """, name, url, entry["url"])
+        row = cur.fetchone()
+        return row[0] if row else None
+
+    aon_id = stored_aon_id(src or {}, entry["url"])
 
     if aon_id is not None:
         cur.execute(f"""

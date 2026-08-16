@@ -215,6 +215,15 @@ def aon_numeric_id(src):
     return to_int(raw_id)
 
 
+def stored_spell_aon_id(src, fallback_url=None):
+    raw_id = clean(first_existing(src, "id", "_elastic_id", "aonid", "aon_id"))
+
+    if raw_id and "-" in raw_id and to_int(raw_id.rsplit("-", 1)[-1]) is None:
+        return None
+
+    return aon_numeric_id(src) or aon_id_from_url(fallback_url)
+
+
 def aon_id_from_url(url):
     if not url:
         return None
@@ -357,7 +366,37 @@ def insert_spell_row(cur, values, cache):
     return cur.fetchone()[0]
 
 
-def existing_spell_id(cur, aon_id, aon_url, cache):
+def existing_spell_id(cur, aon_id, aon_url, name, cache):
+    if has_column(cur, "pf2", "Spell", "AonUrl", cache) and aon_url and name:
+        cur.execute("""
+            SELECT TOP 1 SpellId
+            FROM pf2.Spell
+            WHERE Name = ?
+              AND AonUrl = ?
+        """, name, aon_url)
+
+        row = cur.fetchone()
+
+        if row:
+            return row[0]
+
+        return None
+
+    if has_column(cur, "pf2", "Spell", "AonId", cache) and aon_id is not None and name:
+        cur.execute("""
+            SELECT TOP 1 SpellId
+            FROM pf2.Spell
+            WHERE Name = ?
+              AND AonId = ?
+        """, name, aon_id)
+
+        row = cur.fetchone()
+
+        if row:
+            return row[0]
+
+        return None
+
     if has_column(cur, "pf2", "Spell", "AonId", cache) and aon_id is not None:
         cur.execute("""
             SELECT TOP 1 SpellId
@@ -527,7 +566,7 @@ def insert_spell_from_elastic(cur, src, cache):
         raise ValueError("Spell has no name")
 
     aon_url = aon_url_from_src(src)
-    aon_id = aon_numeric_id(src) or aon_id_from_url(aon_url)
+    aon_id = stored_spell_aon_id(src, aon_url)
 
     source = clean(first_existing(src, "primary_source", "source"))
     source_page = source_page_from_raw(src)
@@ -569,7 +608,7 @@ def insert_spell_from_elastic(cur, src, cache):
         "ScrapeVersion": "aon-elastic-spells-v1"
     }
 
-    spell_id = existing_spell_id(cur, aon_id, aon_url, cache)
+    spell_id = existing_spell_id(cur, aon_id, aon_url, name, cache)
 
     if not spell_id:
         spell_id = insert_spell_row(cur, values, cache)
