@@ -78,8 +78,15 @@ def get_or_create_lookup(cur, table, id_col, name_col, name, cache):
         cache[key] = row[0]
         return row[0]
 
-    cur.execute(f"INSERT INTO {table} ({name_col}) VALUES (?)", name)
-    cur.execute("SELECT CONVERT(INT, SCOPE_IDENTITY())")
+    cur.execute(f"""
+        INSERT INTO {table}
+        (
+            {name_col}
+        )
+        OUTPUT INSERTED.{id_col}
+        VALUES
+        (?)
+    """, name)
 
     new_id = cur.fetchone()[0]
     cache[key] = new_id
@@ -285,6 +292,7 @@ def insert_monster_from_elastic(cur, src, cache):
             ScrapeVersion,
             ImageUrl
         )
+        OUTPUT INSERTED.MonsterId
         VALUES
         (?, ?, ?, ?,
          ?, ?, ?, ?,
@@ -314,8 +322,6 @@ def insert_monster_from_elastic(cur, src, cache):
         raw_json,
         "aon-elastic-v2"
     )
-
-    cur.execute("SELECT CONVERT(INT, SCOPE_IDENTITY())")
     monster_id = cur.fetchone()[0]
 
     cur.execute("""

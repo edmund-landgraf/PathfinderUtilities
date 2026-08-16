@@ -21,6 +21,7 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="parseMonsterDetail.py" />
     <Compile Include="pullEquipment.py" />
     <Compile Include="pullFeats.py" />
     <Compile Include="pullSpells.py" />
