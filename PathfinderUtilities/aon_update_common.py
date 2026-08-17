@@ -5,7 +5,7 @@ import re
 import time
 from collections import defaultdict
 from datetime import date
-from urllib.parse import parse_qs, urljoin, urlparse
+from urllib.parse import parse_qs, unquote_plus, urljoin, urlparse
 
 import requests
 from bs4 import BeautifulSoup
@@ -228,6 +228,7 @@ def parse_source_page(source):
 
         expected_count = int(match.group(2))
         entries = []
+        source_link_count = 0
 
         for sibling in heading.next_siblings:
             if getattr(sibling, "name", None) == "h2":
@@ -242,6 +243,15 @@ def parse_source_page(source):
                 if not is_supported_entry_href(href):
                     continue
 
+                source_link_count += 1
+
+                if is_source_collection_href(href):
+                    entries.extend(expand_source_collection_entries(href, section_name))
+                    continue
+
+                if not is_detail_entry_href(href):
+                    continue
+
                 entries.append({
                     "name": clean(link.get_text(" ", strip=True)),
                     "url": urljoin(BASE_URL, href),
@@ -252,7 +262,7 @@ def parse_source_page(source):
         deduped_entries = dedupe_entries(entries)
         sections[section_name] = {
             "expected_count": expected_count,
-            "source_link_count": len(entries),
+            "source_link_count": source_link_count,
             "entries": deduped_entries,
             "duplicate_entries": duplicate_entries(entries),
         }
@@ -292,6 +302,78 @@ def is_supported_entry_href(href):
         "/monsters.aspx",
         "/npcs.aspx",
     ))
+
+
+def is_detail_entry_href(href):
+    query = parse_qs(urlparse(urljoin(BASE_URL, href)).query)
+    return "ID" in query
+
+
+def is_source_collection_href(href):
+    parsed = urlparse(urljoin(BASE_URL, href))
+    query = parse_qs(parsed.query)
+    path = parsed.path.lower()
+
+    return (
+        "include-sources" in query
+        and path.endswith(("/monsters.aspx", "/npcs.aspx"))
+    )
+
+
+def expand_source_collection_entries(href, section_name):
+    parsed = urlparse(urljoin(BASE_URL, href))
+    query = parse_qs(parsed.query)
+    source_names = query.get("include-sources") or []
+
+    if not source_names:
+        return []
+
+    source_name = clean(unquote_plus(source_names[0]))
+
+    if not source_name:
+        return []
+
+    wanted_path = parsed.path
+    payload = {
+        "size": 1000,
+        "_source": ["name", "url", "source", "category", "type", "id"],
+        "query": {
+            "bool": {
+                "filter": [
+                    {"term": {"category": "creature"}},
+                    {"match_phrase": {"source": source_name}},
+                ]
+            }
+        },
+        "sort": [
+            {"name.keyword": {"order": "asc"}}
+        ],
+    }
+
+    data = post_elastic(payload)
+    entries = []
+
+    for hit in data.get("hits", {}).get("hits", []):
+        src = hit.get("_source", {})
+        url = clean(src.get("url"))
+
+        if not url:
+            continue
+
+        hit_path = urlparse(urljoin(BASE_URL, url)).path
+
+        if hit_path.lower() != wanted_path.lower():
+            continue
+
+        entries.append({
+            "name": clean(src.get("name")),
+            "url": urljoin(BASE_URL, url),
+            "relative_url": relative_aon_url(url),
+            "section": section_name,
+        })
+
+    entries.sort(key=lambda entry: (aon_id_from_url(entry["url"]) or 0, entry["name"] or ""))
+    return entries
 
 
 def relative_aon_url(href):

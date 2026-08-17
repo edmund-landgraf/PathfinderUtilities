@@ -5,6 +5,7 @@ from datetime import date
 
 from aon_update_common import (
     INCLUDED_SOURCE_CATEGORIES,
+    SUPPORTED_SECTIONS,
     build_source_preview,
     fetch_source_by_id,
     fetch_sources_by_release_date,
@@ -54,6 +55,13 @@ def parse_args():
         action="store_true",
         help="Show existing rows as well as new rows in the preview."
     )
+    parser.add_argument(
+        "--sections",
+        help=(
+            "Comma-separated sections to process. "
+            "Allowed: Equipment, Feats, Spells, Monsters, NPCs."
+        )
+    )
     return parser.parse_args()
 
 
@@ -90,6 +98,7 @@ def print_source_list(sources, args):
 
 def process_source(source, args):
     source_page = parse_source_page(source)
+    apply_section_filter(source_page, args.sections)
     preview = build_source_preview(source_page, include_hydration=True)
     print_preview(preview, show_all=args.show_existing)
 
@@ -117,6 +126,39 @@ def process_source(source, args):
             f"  {section_name}: imported={result['imported']} "
             f"skipped={result['skipped']} failed={result['failed']}"
         )
+
+
+def apply_section_filter(source_page, section_filter):
+    if not section_filter:
+        return
+
+    wanted = {
+        section.strip().lower()
+        for section in section_filter.split(",")
+        if section.strip()
+    }
+    allowed = {section.lower(): section for section in SUPPORTED_SECTIONS}
+    unknown = sorted(section for section in wanted if section not in allowed)
+
+    if unknown:
+        raise RuntimeError(
+            "Unknown section(s): "
+            + ", ".join(unknown)
+            + f". Allowed: {', '.join(SUPPORTED_SECTIONS)}"
+        )
+
+    selected = {allowed[section] for section in wanted}
+
+    for section_name in SUPPORTED_SECTIONS:
+        if section_name in selected:
+            continue
+
+        source_page["sections"][section_name] = {
+            "expected_count": 0,
+            "source_link_count": 0,
+            "entries": [],
+            "duplicate_entries": [],
+        }
 
 
 def main():
