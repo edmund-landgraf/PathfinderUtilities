@@ -23,6 +23,7 @@
   <ItemGroup>
     <Compile Include="aon_update_common.py" />
     <Compile Include="import_demiplane_monster_images.py" />
+    <Compile Include="import_demiplane_missing_creatures.py" />
     <Compile Include="parseMonsterDetail.py" />
     <Compile Include="pullEquipment.py" />
     <Compile Include="pullFeats.py" />
