@@ -833,32 +833,42 @@ def download_image(
 ) -> bytes | None:
     """Download and lightly validate an image before inserting bytes."""
 
-    response = session.get(
-        image_url,
-        headers={
-            "User-Agent": (
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                "AppleWebKit/537.36 (KHTML, like Gecko) "
-                "Chrome/149.0 Safari/537.36"
-            ),
-            "Accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
-        },
-        timeout=60,
-        allow_redirects=True,
-    )
-    response.raise_for_status()
+    try:
+        response = session.get(
+            image_url,
+            headers={
+                "User-Agent": (
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                    "AppleWebKit/537.36 (KHTML, like Gecko) "
+                    "Chrome/149.0 Safari/537.36"
+                ),
+                "Accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+            },
+            timeout=60,
+            allow_redirects=True,
+        )
+    except requests.RequestException as exc:
+        logging.warning("Skipping image download after request error: %s | %s", image_url, exc)
+        return None
+
+    if response.status_code >= 400:
+        logging.warning("Skipping image download after HTTP %s: %s", response.status_code, image_url)
+        return None
 
     content_type = (response.headers.get("Content-Type") or "").lower()
     image_data = response.content
 
     if not image_data:
+        logging.warning("Skipping empty image download: %s", image_url)
         return None
 
     if content_type and not content_type.startswith("image/") and "octet-stream" not in content_type:
+        logging.warning("Skipping non-image response %s for %s", content_type, image_url)
         return None
 
     # Keep oversized CDN surprises out of SQL Server.
     if len(image_data) > maximum_image_size_bytes:
+        logging.warning("Skipping oversized image %s bytes: %s", len(image_data), image_url)
         return None
 
     return image_data
