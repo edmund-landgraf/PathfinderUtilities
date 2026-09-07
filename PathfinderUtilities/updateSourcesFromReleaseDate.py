@@ -8,7 +8,7 @@ from aon_update_common import (
     SUPPORTED_SECTIONS,
     build_source_preview,
     fetch_source_by_id,
-    fetch_sources_by_release_date,
+    fetch_sources_by_listed_date,
     import_preview,
     parse_source_page,
     print_preview,
@@ -17,17 +17,17 @@ from aon_update_common import (
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="Import new PF2 AoN content from source books released in a date range."
+        description="Import new PF2 AoN content from sources listed on AoN in a date range."
     )
     parser.add_argument(
         "--from-date",
         default="2026-06-07",
-        help="Inclusive AoN source release-date start, YYYY-MM-DD. Default: 2026-06-07."
+        help="Inclusive AoN homepage listed-date start, YYYY-MM-DD. Default: 2026-06-07."
     )
     parser.add_argument(
         "--to-date",
         default=date.today().isoformat(),
-        help="Inclusive AoN source release-date end, YYYY-MM-DD. Default: today."
+        help="Inclusive AoN homepage listed-date end, YYYY-MM-DD. Default: today."
     )
     parser.add_argument(
         "--source-id",
@@ -69,7 +69,7 @@ def discover_sources(args):
     if args.source_id:
         return [fetch_source_by_id(source_id) for source_id in args.source_id]
 
-    return fetch_sources_by_release_date(
+    return fetch_sources_by_listed_date(
         args.from_date,
         args.to_date,
         categories=INCLUDED_SOURCE_CATEGORIES,
@@ -84,7 +84,7 @@ def print_source_list(sources, args):
     if args.source_id:
         print("Mode: explicit source ID")
     else:
-        print(f"Mode: release date {args.from_date} through {args.to_date}")
+        print(f"Mode: AoN listed date {args.from_date} through {args.to_date}")
         print(f"Included categories: {', '.join(INCLUDED_SOURCE_CATEGORIES)}")
 
     print()
@@ -92,8 +92,12 @@ def print_source_list(sources, args):
 
     for idx, source in enumerate(sources, start=1):
         category = source.get("source_category") or "(unknown category)"
-        release_date = source.get("release_date") or "(unknown date)"
-        print(f"{idx}. {source.get('name')} | {release_date} | {category} | {source.get('url')}")
+        listed_date = source.get("listed_date") or "(unknown listed date)"
+        release_date = source.get("release_date") or "(unknown pub date)"
+        print(
+            f"{idx}. {source.get('name')} | listed {listed_date} | "
+            f"pub {release_date} | {category} | {source.get('url')}"
+        )
 
 
 def process_source(source, args):

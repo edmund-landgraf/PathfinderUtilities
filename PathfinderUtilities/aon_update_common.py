@@ -20,7 +20,7 @@ CONN_STR = (
     "Trusted_Connection=yes;"
 )
 
-INCLUDED_SOURCE_CATEGORIES = ("Adventure Paths", "Lost Omens", "Rulebooks")
+INCLUDED_SOURCE_CATEGORIES = ("Adventure Paths", "Adventures", "Lost Omens", "Rulebooks")
 SUPPORTED_SECTIONS = ("Equipment", "Feats", "Spells", "Monsters", "NPCs")
 
 SECTION_ROUTE = {
@@ -89,63 +89,124 @@ def post_elastic(payload, timeout=60):
     return response.json()
 
 
-def fetch_sources_by_release_date(from_date, to_date=None, categories=INCLUDED_SOURCE_CATEGORIES):
-    to_date = to_date or date.today().isoformat()
+AON_NEWS_DATE_RE = re.compile(
+    r"^(?P<month>\d{1,2})/(?P<day>\d{1,2})/(?P<year>\d{2,4})\b"
+)
+SOURCE_HREF_ID_RE = re.compile(r"Sources\.aspx\?ID=(\d+)", re.I)
+
+
+def parse_ymd(value):
+    if isinstance(value, date):
+        return value
+
+    value = clean(value)
+    if not value:
+        return None
+
+    return date.fromisoformat(value[:10])
+
+
+def parse_aon_news_date(value):
+    value = clean(value)
+    if not value:
+        return None
+
+    match = AON_NEWS_DATE_RE.match(value)
+    if not match:
+        return None
+
+    year = int(match.group("year"))
+    if year < 100:
+        year += 2000
+
+    return date(year, int(match.group("month")), int(match.group("day")))
+
+
+def category_matches(source_category, categories):
+    if not categories:
+        return True
+
+    wanted = {clean(item) for item in categories if clean(item)}
+    actual = {
+        clean(part)
+        for part in re.split(r"\s*,\s*", source_category or "")
+        if clean(part)
+    }
+    return bool(wanted & actual)
+
+
+def fetch_aon_listed_source_dates():
+    response = session.get(BASE_URL, timeout=60)
+    response.raise_for_status()
+
+    soup = BeautifulSoup(response.text, "lxml")
+    main = soup.select_one("#main") or soup
+    listed = {}
+    current_date = None
+    in_new_books = False
+
+    for el in main.find_all(["h1", "h2", "a"]):
+        classes = el.get("class") or []
+
+        if el.name == "h1" and "title" in classes:
+            current_date = parse_aon_news_date(el.get_text(" ", strip=True))
+            in_new_books = False
+            continue
+
+        if el.name == "h2" and "title" in classes:
+            in_new_books = el.get_text(" ", strip=True).strip().lower() == "new books"
+            continue
+
+        if el.name != "a" or not in_new_books or current_date is None:
+            continue
+
+        match = SOURCE_HREF_ID_RE.search(el.get("href") or "")
+        if not match:
+            continue
+
+        source_id = int(match.group(1))
+        previous = listed.get(source_id)
+        if previous is None or current_date > previous:
+            listed[source_id] = current_date
+
+    if not listed:
+        raise RuntimeError("Could not parse any New Books entries from the AoN homepage.")
+
+    return listed
+
+
+def fetch_sources_by_listed_date(from_date, to_date=None, categories=INCLUDED_SOURCE_CATEGORIES):
+    start = parse_ymd(from_date)
+    end = parse_ymd(to_date or date.today().isoformat())
+    if start is None or end is None:
+        raise RuntimeError("--from-date and --to-date must be valid YYYY-MM-DD dates.")
+
+    listed = fetch_aon_listed_source_dates()
+    matching_ids = [
+        source_id
+        for source_id, listed_date in listed.items()
+        if start <= listed_date <= end
+    ]
+    matching_ids.sort(key=lambda source_id: (listed[source_id], source_id))
+
     sources = []
-    offset = 0
-    size = 100
+    for source_id in matching_ids:
+        try:
+            source = fetch_source_by_id(source_id)
+        except RuntimeError:
+            continue
 
-    while True:
-        payload = {
-            "from": offset,
-            "size": size,
-            "_source": [
-                "id",
-                "name",
-                "url",
-                "release_date",
-                "source_category",
-                "source_group",
-                "type",
-                "category",
-            ],
-            "query": {
-                "bool": {
-                    "filter": [
-                        {"term": {"category": "source"}},
-                        {"term": {"type": "Source"}},
-                        {"terms": {"source_category": list(categories)}},
-                        {"range": {"release_date": {"gte": from_date, "lte": to_date}}},
-                    ]
-                }
-            },
-            "sort": [
-                {"release_date": {"order": "asc"}},
-                {"name.keyword": {"order": "asc"}},
-            ],
-        }
+        if not category_matches(source.get("source_category"), categories):
+            continue
 
-        data = post_elastic(payload)
-        hits = data.get("hits", {}).get("hits", [])
-
-        if not hits:
-            break
-
-        for hit in hits:
-            src = hit.get("_source", {})
-            sources.append({
-                "elastic_id": hit.get("_id"),
-                "aon_id": to_int(src.get("id")),
-                "name": clean(src.get("name")),
-                "url": urljoin(BASE_URL, src.get("url") or ""),
-                "release_date": clean(src.get("release_date")),
-                "source_category": clean(src.get("source_category")),
-                "source_group": clean(src.get("source_group")),
-            })
-
-        offset += size
+        source["listed_date"] = listed[source_id].isoformat()
+        sources.append(source)
 
     return sources
+
+
+def fetch_sources_by_release_date(from_date, to_date=None, categories=INCLUDED_SOURCE_CATEGORIES):
+    return fetch_sources_by_listed_date(from_date, to_date, categories)
 
 
 def fetch_source_by_id(source_id):

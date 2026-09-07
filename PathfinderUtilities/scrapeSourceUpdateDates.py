@@ -48,7 +48,7 @@ def parse_args():
     parser.add_argument(
         "--categories",
         default=",".join(INCLUDED_SOURCE_CATEGORIES),
-        help="Comma-separated AoN source categories. Default: Adventure Paths, Lost Omens, Rulebooks."
+        help="Comma-separated AoN source categories. Default: Adventure Paths, Adventures, Lost Omens, Rulebooks."
     )
     parser.add_argument(
         "--include-all-categories",
