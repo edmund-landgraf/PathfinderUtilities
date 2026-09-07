@@ -26,6 +26,7 @@
     <Compile Include="import_demiplane_missing_creatures.py" />
     <Compile Include="parseMonsterDetail.py" />
     <Compile Include="pullEquipment.py" />
+    <Compile Include="makeThumbnails.py" />
     <Compile Include="pullFeats.py" />
     <Compile Include="pullSpells.py" />
     <Compile Include="test2.py" />
