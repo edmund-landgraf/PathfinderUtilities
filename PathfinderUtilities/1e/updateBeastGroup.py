@@ -1,3 +1,4 @@
+import os
 import re
 import pyodbc
 
@@ -8,7 +9,9 @@ CONN_STR = (
     "DRIVER={ODBC Driver 17 for SQL Server};"
     "SERVER=localhost;"
     "DATABASE=PathfinderUtil;"
-    "Trusted_Connection=yes;"
+    f"UID={os.environ.get('MSSQL_USER', 'sa')};"
+    f"PWD={os.environ.get('MSSQL_PASSWORD', '')};"
+    "TrustServerCertificate=yes;"
 )
 
 def extract_group_from_url(url):

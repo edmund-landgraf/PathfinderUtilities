@@ -1,5 +1,6 @@
 # pip install pyodbc
 
+import os
 import argparse
 import csv
 from datetime import datetime
@@ -12,7 +13,9 @@ CONN_STR = (
     "DRIVER={ODBC Driver 17 for SQL Server};"
     "SERVER=localhost;"
     "DATABASE=PathfinderUtil;"
-    "Trusted_Connection=yes;"
+    f"UID={os.environ.get('MSSQL_USER', 'sa')};"
+    f"PWD={os.environ.get('MSSQL_PASSWORD', '')};"
+    "TrustServerCertificate=yes;"
 )
 
 

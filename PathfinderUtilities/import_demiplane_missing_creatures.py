@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import json
 import logging
 import re
@@ -89,7 +90,6 @@ query DemiplaneCreatures($limit: Int!, $offset: Int!, $name: String) {
     creature_family
     primary_source_name
     short_description
-    long_description
     element_display
     element_image
     element_thumbnail
@@ -201,13 +201,16 @@ def connect() -> pyodbc.Connection:
             "DRIVER={ODBC Driver 17 for SQL Server};"
             "SERVER=localhost;"
             "DATABASE=PathfinderUtil;"
-            "Trusted_Connection=yes;"
+            f"UID={os.environ.get('MSSQL_USER', 'sa')};"
+            f"PWD={os.environ.get('MSSQL_PASSWORD', '')};"
+            "TrustServerCertificate=yes;"
         ),
         (
             "DRIVER={ODBC Driver 17 for SQL Server};"
             "SERVER=localhost;"
             "DATABASE=PathfinderUtil;"
-            "Trusted_Connection=yes;"
+            f"UID={os.environ.get('MSSQL_USER', 'sa')};"
+            f"PWD={os.environ.get('MSSQL_PASSWORD', '')};"
             "Encrypt=no;"
             "TrustServerCertificate=yes;"
         ),
@@ -215,7 +218,8 @@ def connect() -> pyodbc.Connection:
             "DRIVER={ODBC Driver 18 for SQL Server};"
             "SERVER=localhost;"
             "DATABASE=PathfinderUtil;"
-            "Trusted_Connection=yes;"
+            f"UID={os.environ.get('MSSQL_USER', 'sa')};"
+            f"PWD={os.environ.get('MSSQL_PASSWORD', '')};"
             "TrustServerCertificate=yes;"
         ),
     ]

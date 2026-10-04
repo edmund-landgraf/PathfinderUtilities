@@ -1,3 +1,4 @@
+import os
 import io
 import sys
 import time
@@ -26,7 +27,9 @@ CONN_STR = (
     "DRIVER={ODBC Driver 17 for SQL Server};"
     f"SERVER={SERVER};"
     f"DATABASE={DATABASE};"
-    "Trusted_Connection=yes;"
+    f"UID={os.environ.get('MSSQL_USER', 'sa')};"
+    f"PWD={os.environ.get('MSSQL_PASSWORD', '')};"
+    "TrustServerCertificate=yes;"
 )
 
 

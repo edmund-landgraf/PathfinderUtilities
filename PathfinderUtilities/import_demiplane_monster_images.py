@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import logging
 import re
 import time
@@ -164,13 +165,16 @@ def connect() -> pyodbc.Connection:
             "DRIVER={ODBC Driver 17 for SQL Server};"
             "SERVER=localhost;"
             "DATABASE=PathfinderUtil;"
-            "Trusted_Connection=yes;"
+            f"UID={os.environ.get('MSSQL_USER', 'sa')};"
+            f"PWD={os.environ.get('MSSQL_PASSWORD', '')};"
+            "TrustServerCertificate=yes;"
         ),
         (
             "DRIVER={ODBC Driver 17 for SQL Server};"
             "SERVER=localhost;"
             "DATABASE=PathfinderUtil;"
-            "Trusted_Connection=yes;"
+            f"UID={os.environ.get('MSSQL_USER', 'sa')};"
+            f"PWD={os.environ.get('MSSQL_PASSWORD', '')};"
             "Encrypt=no;"
             "TrustServerCertificate=yes;"
         ),
@@ -178,7 +182,8 @@ def connect() -> pyodbc.Connection:
             "DRIVER={ODBC Driver 18 for SQL Server};"
             "SERVER=localhost;"
             "DATABASE=PathfinderUtil;"
-            "Trusted_Connection=yes;"
+            f"UID={os.environ.get('MSSQL_USER', 'sa')};"
+            f"PWD={os.environ.get('MSSQL_PASSWORD', '')};"
             "TrustServerCertificate=yes;"
         ),
     ]

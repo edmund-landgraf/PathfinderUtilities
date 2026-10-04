@@ -1,3 +1,4 @@
+import os
 import re
 import time
 import pyodbc
@@ -11,7 +12,9 @@ CONN_STR = (
     "DRIVER={ODBC Driver 17 for SQL Server};"
     "SERVER=localhost;"
     "DATABASE=PathfinderUtil;"          # adjust if needed
-    "Trusted_Connection=yes;"
+    f"UID={os.environ.get('MSSQL_USER', 'sa')};"
+    f"PWD={os.environ.get('MSSQL_PASSWORD', '')};"
+    "TrustServerCertificate=yes;"
 )
 
 BASE_URL = "https://www.d20pfsrd.com"

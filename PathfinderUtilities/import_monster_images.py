@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import os
 import time
 from dataclasses import dataclass
 
@@ -13,12 +14,12 @@ class Config:
     sql_server: str = r"localhost"
     database: str = "PathfinderUtil"
 
-    # Use Windows authentication.
     connection_string: str = (
         r"DRIVER={ODBC Driver 18 for SQL Server};"
         r"SERVER=localhost;"
         r"DATABASE=PathfinderUtil;"
-        r"Trusted_Connection=yes;"
+        f"UID={os.environ.get('MSSQL_USER', 'sa')};"
+        f"PWD={os.environ.get('MSSQL_PASSWORD', '')};"
         r"TrustServerCertificate=yes;"
     )
 
