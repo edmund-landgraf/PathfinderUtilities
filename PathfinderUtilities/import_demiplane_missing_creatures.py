@@ -662,6 +662,12 @@ def insert_creature(
     demiplane_url = DEMIPLANE_CREATURE_URL.format(slug=creature.slug)
     raw_json = json.dumps(creature.raw, ensure_ascii=False)
     raw_text = html_to_text("\n".join(x for x in (creature.description_html, creature.stat_html) if x))
+    raw_md = html_to_raw_md(
+        creature.stat_html,
+        creature.name,
+        creature.level,
+        creature.traits.creature_traits,
+    )
 
     # Aon* columns are reused as generic external-source columns here because
     # these creatures do not have Archives of Nethys IDs yet.
@@ -703,7 +709,7 @@ def insert_creature(
             SYSDATETIME(),
             ?,
             ?,
-            NULL
+            ?
         )
     """,
         demiplane_url,
@@ -722,6 +728,7 @@ def insert_creature(
         raw_json,
         SCRAPE_VERSION,
         creature.image_url,
+        raw_md,
     )
     monster_id = int(cursor.fetchone()[0])
 
@@ -760,6 +767,61 @@ def insert_creature(
         """, monster_id, trait_id)
 
     return monster_id
+
+
+def html_to_raw_md(
+    html: str | None,
+    name: str,
+    level: int | None,
+    traits: list[str] | None = None,
+) -> str | None:
+    """Turn Demiplane stat HTML into the markdown shape stat cards parse.
+
+    Cards only read RawMD, and they require a "Name Creature N" heading plus
+    one **Label** line per stat. Action glyphs are empty spans, so their
+    accessible names are written out as text.
+    """
+
+    if not html:
+        return None
+
+    soup = BeautifulSoup(html, "lxml")
+    for icon in soup.select("span.icon"):
+        label = clean(icon.get("aria-label") or icon.get("title"))
+        icon.replace_with(f" {label} " if label else "")
+
+    lines = []
+    heading = name
+    if level is not None:
+        heading = f"{name} Creature {level}"
+    lines.append(f"## {heading}")
+    lines.append("")
+    for trait in traits or []:
+        trait_name = clean(trait)
+        if trait_name:
+            lines.append(f"- {trait_name}")
+    if traits:
+        lines.append("")
+
+    for node in soup.find_all("p"):
+        label_node = node.find("strong")
+        if label_node is None:
+            text = clean(node.get_text(" ", strip=True))
+            if text:
+                lines.append(text)
+            continue
+        label = clean(label_node.get_text(" ", strip=True))
+        label_node.extract()
+        value = clean(node.get_text(" ", strip=True))
+        if label and value:
+            lines.append(f"**{label}** {value}")
+        elif label:
+            lines.append(f"**{label}**")
+        elif value:
+            lines.append(value)
+
+    markdown = "\n".join(lines).strip()
+    return markdown or None
 
 
 def html_to_text(html: str | None) -> str | None:
