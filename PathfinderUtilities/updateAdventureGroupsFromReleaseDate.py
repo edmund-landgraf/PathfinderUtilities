@@ -3,7 +3,7 @@
 import argparse
 import re
 from datetime import date
-from urllib.parse import parse_qs, urljoin, urlparse
+from urllib.parse import parse_qs, urlencode, urljoin, urlparse, urlunparse
 
 import requests
 from bs4 import BeautifulSoup
@@ -191,6 +191,23 @@ def find_source_group_url(source):
     return None
 
 
+def canonical_detail_href(href):
+    """
+    Normalize AoN detail links so presentation-only query parameters such as
+    NoRedirect=1 do not create duplicate records or break Elasticsearch hydration.
+    """
+    parsed = urlparse(urljoin(BASE_URL, href))
+    query = parse_qs(parsed.query)
+
+    # Preserve the AoN record identity and drop presentation-only parameters.
+    canonical_query = {}
+    if "ID" in query and query["ID"]:
+        canonical_query["ID"] = query["ID"][0]
+
+    normalized = parsed._replace(query=urlencode(canonical_query), fragment="")
+    return urlunparse(normalized)
+
+
 def classify_section_from_href(href):
     path = urlparse(urljoin(BASE_URL, href)).path.lower()
 
@@ -265,10 +282,12 @@ def parse_group_page(source, group_url):
         if not is_detail_entry_href(href):
             continue
 
+        canonical_href = canonical_detail_href(href)
+
         raw_entries[section_name].append({
             "name": link.get_text(" ", strip=True) or None,
-            "url": urljoin(BASE_URL, href),
-            "relative_url": relative_aon_url(href),
+            "url": canonical_href,
+            "relative_url": relative_aon_url(canonical_href),
             "section": section_name,
         })
 
