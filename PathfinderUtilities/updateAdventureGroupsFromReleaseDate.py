@@ -208,6 +208,83 @@ def canonical_detail_href(href):
     return urlunparse(normalized)
 
 
+def entry_identity(entry):
+    return (
+        (entry.get("section") or "").lower(),
+        (entry.get("relative_url") or "").lower(),
+    )
+
+
+def prefer_group_entry(current, candidate):
+    """
+    Prefer the canonical single-creature/NPC label over encounter-count labels such as
+    'Ratfolk Ambushers (4)' when both point at the same AoN ID.
+    """
+    if current is None:
+        return candidate
+
+    current_name = (current.get("name") or "").strip()
+    candidate_name = (candidate.get("name") or "").strip()
+
+    current_counted = bool(re.search(r"\s*\(\d+\)\s*$", current_name))
+    candidate_counted = bool(re.search(r"\s*\(\d+\)\s*$", candidate_name))
+
+    if current_counted and not candidate_counted:
+        return candidate
+    if candidate_counted and not current_counted:
+        return current
+
+    # Otherwise keep the shorter/cleaner display label.
+    if candidate_name and (not current_name or len(candidate_name) < len(current_name)):
+        return candidate
+
+    return current
+
+
+def dedupe_group_entries(entries):
+    by_identity = {}
+    duplicates = []
+
+    for entry in entries:
+        key = entry_identity(entry)
+        if key in by_identity:
+            duplicates.append(entry)
+            by_identity[key] = prefer_group_entry(by_identity[key], entry)
+        else:
+            by_identity[key] = entry
+
+    return list(by_identity.values()), duplicates
+
+
+def normalize_group_sections(source_page):
+    """
+    Canonicalize all supported detail URLs and dedupe by AoN identity (section + URL),
+    not by display text. Setting pages often contain encounter labels like '(4)' that
+    point to the exact same AoN record as the normal single-creature link.
+    """
+    for section_name in SUPPORTED_SECTIONS:
+        section = source_page.get("sections", {}).get(section_name)
+        if not section:
+            continue
+
+        normalized = []
+        for entry in section.get("entries", []):
+            canonical_href = canonical_detail_href(entry.get("url") or entry.get("relative_url") or "")
+            normalized.append({
+                **entry,
+                "url": canonical_href,
+                "relative_url": relative_aon_url(canonical_href),
+                "section": section_name,
+            })
+
+        deduped, duplicates = dedupe_group_entries(normalized)
+        section["entries"] = deduped
+        section["duplicate_entries"] = list(section.get("duplicate_entries", [])) + duplicates
+        section["expected_count"] = len(deduped)
+
+    return source_page
+
+
 def classify_section_from_href(href):
     path = urlparse(urljoin(BASE_URL, href)).path.lower()
 
@@ -238,7 +315,7 @@ def parse_group_page(source, group_url):
         "group_fallback_for_name": source.get("name"),
     }
 
-    parsed = parse_source_page(group_source)
+    parsed = normalize_group_sections(parse_source_page(group_source))
 
     if source_has_supported_content(parsed):
         return parsed
@@ -293,12 +370,12 @@ def parse_group_page(source, group_url):
 
     for section_name in SUPPORTED_SECTIONS:
         entries = raw_entries[section_name]
-        deduped = dedupe_entries(entries)
+        deduped, duplicates = dedupe_group_entries(entries)
         sections[section_name] = {
             "expected_count": len(deduped),
             "source_link_count": sections[section_name]["source_link_count"],
             "entries": deduped,
-            "duplicate_entries": duplicate_entries(entries),
+            "duplicate_entries": duplicates,
         }
 
     parsed["sections"] = sections
