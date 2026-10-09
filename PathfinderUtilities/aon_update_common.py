@@ -1,7 +1,7 @@
 # pip install requests beautifulsoup4 lxml pyodbc
 
+from mssql_conn import sql_auth
 import json
-import os
 import re
 import time
 from collections import defaultdict
@@ -18,9 +18,8 @@ CONN_STR = (
     "DRIVER={ODBC Driver 17 for SQL Server};"
     "SERVER=localhost;"
     "DATABASE=PathfinderUtil;"
-    f"UID={os.environ.get('MSSQL_USER', 'sa')};"
-    f"PWD={os.environ.get('MSSQL_PASSWORD', '')};"
-    "TrustServerCertificate=yes;"
+    + sql_auth()
+    + "TrustServerCertificate=yes;"
 )
 
 INCLUDED_SOURCE_CATEGORIES = ("Adventure Paths", "Adventures", "Lost Omens", "Rulebooks")

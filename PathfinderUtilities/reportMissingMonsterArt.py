@@ -1,5 +1,6 @@
 # pip install pyodbc
 
+from mssql_conn import sql_auth
 import os
 import argparse
 import csv
@@ -13,9 +14,8 @@ CONN_STR = (
     "DRIVER={ODBC Driver 17 for SQL Server};"
     "SERVER=localhost;"
     "DATABASE=PathfinderUtil;"
-    f"UID={os.environ.get('MSSQL_USER', 'sa')};"
-    f"PWD={os.environ.get('MSSQL_PASSWORD', '')};"
-    "TrustServerCertificate=yes;"
+    + sql_auth()
+    + "TrustServerCertificate=yes;"
 )
 
 

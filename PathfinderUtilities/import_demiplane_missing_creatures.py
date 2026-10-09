@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import argparse
-import os
 import json
+
+from mssql_conn import sql_auth
 import logging
 import re
 import time
@@ -201,26 +202,23 @@ def connect() -> pyodbc.Connection:
             "DRIVER={ODBC Driver 17 for SQL Server};"
             "SERVER=localhost;"
             "DATABASE=PathfinderUtil;"
-            f"UID={os.environ.get('MSSQL_USER', 'sa')};"
-            f"PWD={os.environ.get('MSSQL_PASSWORD', '')};"
-            "TrustServerCertificate=yes;"
+            + sql_auth()
+            + "TrustServerCertificate=yes;"
         ),
         (
             "DRIVER={ODBC Driver 17 for SQL Server};"
             "SERVER=localhost;"
             "DATABASE=PathfinderUtil;"
-            f"UID={os.environ.get('MSSQL_USER', 'sa')};"
-            f"PWD={os.environ.get('MSSQL_PASSWORD', '')};"
-            "Encrypt=no;"
+            + sql_auth()
+            + "Encrypt=no;"
             "TrustServerCertificate=yes;"
         ),
         (
             "DRIVER={ODBC Driver 18 for SQL Server};"
             "SERVER=localhost;"
             "DATABASE=PathfinderUtil;"
-            f"UID={os.environ.get('MSSQL_USER', 'sa')};"
-            f"PWD={os.environ.get('MSSQL_PASSWORD', '')};"
-            "TrustServerCertificate=yes;"
+            + sql_auth()
+            + "TrustServerCertificate=yes;"
         ),
     ]
     last_error: Exception | None = None

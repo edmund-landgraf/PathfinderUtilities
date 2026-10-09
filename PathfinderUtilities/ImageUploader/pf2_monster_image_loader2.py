@@ -19,7 +19,7 @@ from PIL import Image, ImageTk, ImageGrab, ImageOps
 #   PF2_DB_PASSWORD
 #   PF2_ODBC_DRIVER
 #
-# If PF2_DB_USER is blank, Windows Trusted_Connection is used.
+# Windows uses Trusted_Connection. Other platforms use PF2_DB_USER / PF2_DB_PASSWORD.
 #
 DB_SERVER = os.getenv("PF2_DB_SERVER", "localhost")
 DB_DATABASE = os.getenv("PF2_DB_DATABASE", "PathfinderUtil")
@@ -85,13 +85,13 @@ def build_connection_string():
         "TrustServerCertificate=yes",
     ]
 
-    if DB_USER:
-        parts.extend([
-            f"UID={DB_USER}",
-            f"PWD={DB_PASSWORD}",
-        ])
-    else:
+    if sys.platform == "win32":
         parts.append("Trusted_Connection=yes")
+    else:
+        parts.extend([
+            f"UID={DB_USER or os.environ.get('MSSQL_USER', 'sa')}",
+            f"PWD={DB_PASSWORD or os.environ.get('MSSQL_PASSWORD', '')}",
+        ])
 
     return ";".join(parts) + ";"
 

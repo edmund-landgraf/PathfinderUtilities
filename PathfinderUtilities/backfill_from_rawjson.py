@@ -4,9 +4,9 @@
 
 from __future__ import annotations
 
+from mssql_conn import sql_auth
 import argparse
 import json
-import os
 import re
 
 import pyodbc
@@ -17,9 +17,8 @@ CONN_STR = (
     "DRIVER={ODBC Driver 17 for SQL Server};"
     "SERVER=localhost;"
     "DATABASE=PathfinderUtil;"
-    f"UID={os.environ.get('MSSQL_USER', 'sa')};"
-    f"PWD={os.environ.get('MSSQL_PASSWORD', '')};"
-    "TrustServerCertificate=yes;"
+    + sql_auth()
+    + "TrustServerCertificate=yes;"
 )
 
 BATCH_SIZE = 100

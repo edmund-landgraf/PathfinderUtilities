@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 import logging
-import os
 import time
+
+from mssql_conn import sql_auth
 from dataclasses import dataclass
 
 import pyodbc
@@ -18,9 +19,8 @@ class Config:
         r"DRIVER={ODBC Driver 18 for SQL Server};"
         r"SERVER=localhost;"
         r"DATABASE=PathfinderUtil;"
-        f"UID={os.environ.get('MSSQL_USER', 'sa')};"
-        f"PWD={os.environ.get('MSSQL_PASSWORD', '')};"
-        r"TrustServerCertificate=yes;"
+        + sql_auth()
+        + r"TrustServerCertificate=yes;"
     )
 
     request_timeout_seconds: int = 30

@@ -1,5 +1,6 @@
 # pip install requests beautifulsoup4 lxml
 
+from mssql_conn import sql_auth
 import argparse
 import json
 import os
@@ -16,9 +17,8 @@ CONN_STR = (
     "DRIVER={ODBC Driver 17 for SQL Server};"
     "SERVER=localhost;"
     "DATABASE=PathfinderUtil;"
-    f"UID={os.environ.get('MSSQL_USER', 'sa')};"
-    f"PWD={os.environ.get('MSSQL_PASSWORD', '')};"
-    "TrustServerCertificate=yes;"
+    + sql_auth()
+    + "TrustServerCertificate=yes;"
 )
 
 session = requests.Session()

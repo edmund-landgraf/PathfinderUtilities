@@ -1,4 +1,8 @@
-import os
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from mssql_conn import sql_auth
 import re
 import time
 import logging
@@ -11,9 +15,8 @@ CONN_STR = (
     "DRIVER={ODBC Driver 17 for SQL Server};"
     "SERVER=localhost;"
     "DATABASE=PathfinderUtil;"
-    f"UID={os.environ.get('MSSQL_USER', 'sa')};"
-    f"PWD={os.environ.get('MSSQL_PASSWORD', '')};"
-    "TrustServerCertificate=yes;"
+    + sql_auth()
+    + "TrustServerCertificate=yes;"
 )
 
 WAIT_SECONDS = 2
