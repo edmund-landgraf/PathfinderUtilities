@@ -3,7 +3,8 @@
 Google captchas this server, so the slider is filled from Bing image search
 using the query "pathfinder 2e {name}". Nothing is written until OK is pressed
 for the image currently on screen. That downloads the original file into
-MonsterImage and sets ImageUrl.
+MonsterImage. ImageUrl is this server's image route. The original
+address is kept in ImageSourceUrl.
 """
 
 from __future__ import annotations
@@ -14,6 +15,7 @@ import json
 import os
 import random
 import re
+import sys
 import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
@@ -40,13 +42,21 @@ RESULT_RE = re.compile(
     re.S,
 )
 MAX_IMAGES = 12
+MIN_IMAGE_EDGE = 400
 
 
 def parse_args() -> argparse.Namespace:
+    # Allow --100 as well as --count 100.
+    argv = []
+    for token in sys.argv[1:]:
+        if re.fullmatch(r"--\d+", token):
+            argv.extend(["--count", token[2:]])
+        else:
+            argv.append(token)
     parser = argparse.ArgumentParser(description="Pick creature art from image search. Writes only on OK.")
-    parser.add_argument("--count", type=int, default=10)
+    parser.add_argument("--count", type=int, default=10, help="How many creatures to review. --100 is the same as --count 100.")
     parser.add_argument("--seed", type=int, default=10, help="Sample seed. Default 10 matches the preview table.")
-    return parser.parse_args()
+    return parser.parse_args(argv)
 
 
 def main() -> None:
@@ -66,15 +76,32 @@ def main() -> None:
 def load_without_images(cursor, image_table: str) -> list[tuple[int, str]]:
     cursor.execute(
         f"""
-        SELECT m.MonsterId, m.Name,
-               COALESCE(NULLIF(LTRIM(RTRIM(m.RawText)), ''), NULLIF(LTRIM(RTRIM(m.RawMD)), ''), '')
+        SELECT m.MonsterId, m.Name, m.AonUrl,
+               COALESCE(NULLIF(LTRIM(RTRIM(m.RawMD)), ''), NULLIF(LTRIM(RTRIM(m.RawText)), ''), '')
         FROM pf2.Monster AS m
         WHERE NOT EXISTS (
             SELECT 1 FROM {image_table} AS mi WHERE mi.MonsterID = m.MonsterId
         )
         """
     )
-    return [(int(row.MonsterId), str(row.Name), readable_description(row[2])) for row in cursor.fetchall()]
+    return [
+        (int(row.MonsterId), str(row.Name), source_link(row.AonUrl), readable_description(row[3]))
+        for row in cursor.fetchall()
+    ]
+
+
+def source_link(url: str | None) -> tuple[str, str]:
+    text = str(url or "").strip()
+    if not text.startswith("http"):
+        return "", ""
+    lower = text.lower()
+    if "demiplane.com" in lower:
+        label = "Demiplane"
+    elif "aonprd.com" in lower:
+        label = "Archives of Nethys"
+    else:
+        label = "Source"
+    return label, text
 
 
 def readable_description(value: str | None) -> str:
@@ -97,30 +124,64 @@ def search_images(name: str) -> list[dict[str, str]]:
     response.raise_for_status()
     found = []
     seen = set()
-    for original, thumb in RESULT_RE.findall(response.text):
-        original = html.unescape(original)
-        thumb = html.unescape(thumb)
-        if original in seen:
+    for match in RESULT_RE.finditer(response.text):
+        original = html.unescape(match.group(1))
+        thumb = html.unescape(match.group(2))
+        if original in seen or "aonprd.com" in original.lower():
+            continue
+        window = html.unescape(response.text[max(0, match.start() - 400): match.end() + 900])
+        width = first_int(window, "expw")
+        height = first_int(window, "exph")
+        if width is not None and height is not None and min(width, height) < MIN_IMAGE_EDGE:
             continue
         seen.add(original)
-        found.append({"original": original, "thumb": thumb, "query": query})
+        found.append({"original": original, "thumb": thumb, "query": query, "width": width or 0, "height": height or 0})
         if len(found) >= MAX_IMAGES:
             break
     return found
+
+
+def first_int(text: str, name: str) -> int | None:
+    match = re.search(rf"{name}=(\d+)", text, re.I)
+    return int(match.group(1)) if match else None
+
+
+def image_is_large_enough(data: bytes) -> bool:
+    from PIL import Image
+    import io
+
+    with Image.open(io.BytesIO(data)) as image:
+        width, height = image.size
+    return min(width, height) >= MIN_IMAGE_EDGE
+
+
+def ensure_image_source_column(cursor) -> None:
+    cursor.execute(
+        """
+        IF COL_LENGTH('pf2.Monster', 'ImageSourceUrl') IS NULL
+            ALTER TABLE pf2.Monster ADD ImageSourceUrl NVARCHAR(MAX) NULL
+        """
+    )
 
 
 def save_image(cursor, connection, image_table: str, monster_id: int, original: str) -> str | None:
     data = download_image(requests.Session(), original, 20 * 1024 * 1024)
     if not data:
         return "The original image could not be downloaded."
+    ensure_image_source_column(cursor)
+    if not image_is_large_enough(data):
+        return f"Image is smaller than {MIN_IMAGE_EDGE}px on its shortest side."
     insert_monster_image(cursor, image_table, monster_id, data)
+    local_url = f"https://pf2.unwhelm.online/api/monsters/{monster_id}/image"
     cursor.execute(
         """
         UPDATE pf2.Monster
         SET ImageUrl = ?,
+            ImageSourceUrl = ?,
             UpdatedAt = SYSDATETIME()
         WHERE MonsterId = ?
         """,
+        local_url,
         original,
         monster_id,
     )
@@ -128,7 +189,7 @@ def save_image(cursor, connection, image_table: str, monster_id: int, original: 
     return None
 
 
-def serve_web(connection, cursor, image_table: str, monsters: list[tuple[int, str, str]]) -> None:
+def serve_web(connection, cursor, image_table: str, monsters: list[tuple]) -> None:
     lock = threading.Lock()
     cache: dict[int, list[dict[str, str]]] = {}
 
@@ -142,7 +203,7 @@ def serve_web(connection, cursor, image_table: str, monsters: list[tuple[int, st
                 if index < 0 or index >= len(monsters):
                     self._send(404, "application/json", b"{}")
                     return
-                monster_id, name, description = monsters[index]
+                monster_id, name, source, description = monsters[index]
                 if index not in cache:
                     cache[index] = search_images(name)
                 body = json.dumps({
@@ -150,6 +211,8 @@ def serve_web(connection, cursor, image_table: str, monsters: list[tuple[int, st
                     "count": len(monsters),
                     "monsterId": monster_id,
                     "name": name,
+                    "sourceLabel": source[0],
+                    "sourceUrl": source[1],
                     "description": description,
                     "images": cache[index],
                 }).encode()
@@ -184,7 +247,7 @@ def serve_web(connection, cursor, image_table: str, monsters: list[tuple[int, st
 
     server = ThreadingHTTPServer(("0.0.0.0", 8765), Handler)
     print("Open http://127.0.0.1:8765")
-    print("No image is saved until you press OK.")
+    print("No image is saved until you click one.")
     server.serve_forever()
 
 
@@ -196,73 +259,81 @@ PAGE = """<!DOCTYPE html>
 <style>
 body { font-family: sans-serif; margin: 24px; background: #1c1c1c; color: #eee; }
 .layout { display: flex; gap: 24px; align-items: flex-start; }
-.art { flex: 1 1 60%; }
-.stat { flex: 1 1 40%; white-space: pre-wrap; max-height: 640px; overflow: auto; background: #111; padding: 12px; }
-img { max-width: 100%; max-height: 520px; background: #111; }
-button { font-size: 16px; margin-right: 8px; padding: 8px 14px; }
-#url { color: #aaa; word-break: break-all; }
+.art { flex: 1 1 62%; }
+.stat { flex: 1 1 38%; white-space: pre-wrap; max-height: 80vh; overflow: auto; background: #111; padding: 12px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; }
+.grid button { padding: 0; border: 2px solid transparent; background: #111; cursor: pointer; }
+.grid button:hover { border-color: #9ecbff; }
+.grid img { width: 100%; height: 180px; object-fit: contain; display: block; background: #111; }
+button.skip { font-size: 16px; margin-top: 12px; padding: 8px 14px; }
+a { color: #9ecbff; word-break: break-all; }
 </style>
 </head>
 <body>
 <h1 id="title">Loading...</h1>
+<p id="source"></p>
 <div class="layout">
 <div class="art">
 <p id="caption"></p>
-<img id="picture" alt="">
-<p id="url"></p>
+<div id="grid" class="grid"></div>
+<button id="skip" class="skip">Skip creature</button>
 </div>
 <pre id="description" class="stat"></pre>
 </div>
-<p>
-<button id="prev">Previous image</button>
-<button id="next">Next image</button>
-<button id="ok">OK, save this image</button>
-<button id="skip">Skip creature</button>
-</p>
 <p id="status"></p>
 <script>
 let creature = 0;
-let image = 0;
 let data = null;
 async function load() {
   const response = await fetch("/api/creature/" + creature);
   if (!response.ok) { document.getElementById("title").textContent = "Done"; return; }
   data = await response.json();
-  image = 0;
   show();
 }
 function show() {
   document.getElementById("title").textContent =
     (data.index + 1) + "/" + data.count + "  " + data.name + "  (MonsterId " + data.monsterId + ")";
   document.getElementById("description").textContent = data.description || "No description stored.";
-  if (!data.images.length) {
-    document.getElementById("caption").textContent = "No images found.";
-    document.getElementById("picture").removeAttribute("src");
-    document.getElementById("url").textContent = "";
-    return;
+  const source = document.getElementById("source");
+  source.textContent = "";
+  if (data.sourceUrl) {
+    const link = document.createElement("a");
+    link.href = data.sourceUrl;
+    link.target = "_blank";
+    link.rel = "noopener";
+    link.textContent = data.sourceLabel + ": " + data.sourceUrl;
+    source.appendChild(link);
   }
-  const item = data.images[image];
-  document.getElementById("caption").textContent = "Image " + (image + 1) + " of " + data.images.length;
-  document.getElementById("picture").src = item.thumb;
-  document.getElementById("url").textContent = item.original;
+  const grid = document.getElementById("grid");
+  grid.textContent = "";
+  document.getElementById("caption").textContent = data.images.length
+    ? data.images.length + " images. Click one to save it."
+    : "No images found.";
+  data.images.forEach((item) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    const img = document.createElement("img");
+    img.src = item.thumb;
+    img.alt = item.original;
+    button.appendChild(img);
+    button.onclick = () => save(item.original);
+    grid.appendChild(button);
+  });
 }
-document.getElementById("prev").onclick = () => { if (data.images.length) { image = (image + data.images.length - 1) % data.images.length; show(); } };
-document.getElementById("next").onclick = () => { if (data.images.length) { image = (image + 1) % data.images.length; show(); } };
-document.getElementById("skip").onclick = () => { creature += 1; load(); };
-document.getElementById("ok").onclick = async () => {
-  if (!data.images.length) return;
+async function save(original) {
   document.getElementById("status").textContent = "Saving...";
   const response = await fetch("/api/save", {
     method: "POST",
     headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({monsterId: data.monsterId, original: data.images[image].original})
+    body: JSON.stringify({monsterId: data.monsterId, original})
   });
   const body = await response.json();
   if (!response.ok) { document.getElementById("status").textContent = body.error || "Save failed"; return; }
   document.getElementById("status").textContent = "Saved.";
   creature += 1;
   load();
-};
+}
+document.getElementById("skip").onclick = () => { creature += 1; load(); };
 load();
 </script>
 </body>
