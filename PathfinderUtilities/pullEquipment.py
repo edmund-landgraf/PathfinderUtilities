@@ -406,6 +406,35 @@ def insert_equipment_row(cur, values, cache):
     return cur.fetchone()[0]
 
 
+def update_equipment_row(cur, equipment_id, values, cache):
+    assignments = []
+    params = []
+
+    for column, value in values.items():
+        if column in ("CreatedAt", "UpdatedAt", "LastScraped"):
+            continue
+        if not has_column(cur, "pf2", "Equipment", column, cache):
+            continue
+        assignments.append(f"{column} = ?")
+        params.append(value)
+
+    if has_column(cur, "pf2", "Equipment", "UpdatedAt", cache):
+        assignments.append("UpdatedAt = SYSDATETIME()")
+    if has_column(cur, "pf2", "Equipment", "LastScraped", cache):
+        assignments.append("LastScraped = SYSDATETIME()")
+
+    if not assignments:
+        return 0
+
+    params.append(equipment_id)
+    cur.execute(f"""
+        UPDATE pf2.Equipment
+        SET {", ".join(assignments)}
+        WHERE EquipmentId = ?
+    """, *params)
+    return cur.rowcount
+
+
 def existing_equipment_id(cur, aon_key, aon_url, name, cache):
     if has_column(cur, "pf2", "Equipment", "AonKey", cache) and aon_key:
         cur.execute("""
@@ -556,7 +585,7 @@ def insert_equipment_trait(cur, equipment_id, trait_id, cache):
     )
 
 
-def insert_equipment_from_elastic(cur, src, cache):
+def insert_equipment_from_elastic(cur, src, cache, update_existing=False):
     name = clean(first_existing(src, "name", "title"))
 
     if not name:
@@ -623,6 +652,8 @@ def insert_equipment_from_elastic(cur, src, cache):
 
     if not equipment_id:
         equipment_id = insert_equipment_row(cur, values, cache)
+    elif update_existing:
+        update_equipment_row(cur, equipment_id, values, cache)
 
     insert_source_link(cur, equipment_id, source_id, source_page, cache)
 

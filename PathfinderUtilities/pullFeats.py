@@ -343,6 +343,35 @@ def insert_feat_row(cur, values, cache):
     return cur.fetchone()[0]
 
 
+def update_feat_row(cur, feat_id, values, cache):
+    assignments = []
+    params = []
+
+    for column, value in values.items():
+        if column in ("CreatedAt", "UpdatedAt", "LastScraped"):
+            continue
+        if not has_column(cur, "pf2", "Feat", column, cache):
+            continue
+        assignments.append(f"{column} = ?")
+        params.append(value)
+
+    if has_column(cur, "pf2", "Feat", "UpdatedAt", cache):
+        assignments.append("UpdatedAt = SYSDATETIME()")
+    if has_column(cur, "pf2", "Feat", "LastScraped", cache):
+        assignments.append("LastScraped = SYSDATETIME()")
+
+    if not assignments:
+        return 0
+
+    params.append(feat_id)
+    cur.execute(f"""
+        UPDATE pf2.Feat
+        SET {", ".join(assignments)}
+        WHERE FeatId = ?
+    """, *params)
+    return cur.rowcount
+
+
 def existing_feat_id(cur, aon_id, aon_url, name, cache):
     if has_column(cur, "pf2", "Feat", "AonUrl", cache) and aon_url and name:
         cur.execute("""
@@ -504,7 +533,7 @@ def insert_feat_trait(cur, feat_id, trait_id, cache):
     )
 
 
-def insert_feat_from_elastic(cur, src, cache):
+def insert_feat_from_elastic(cur, src, cache, update_existing=False):
     name = clean(first_existing(src, "name", "feat", "title"))
 
     if not name:
@@ -545,6 +574,8 @@ def insert_feat_from_elastic(cur, src, cache):
 
     if not feat_id:
         feat_id = insert_feat_row(cur, values, cache)
+    elif update_existing:
+        update_feat_row(cur, feat_id, values, cache)
 
     insert_source_link(cur, feat_id, source_id, source_page, cache)
 

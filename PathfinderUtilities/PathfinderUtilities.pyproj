@@ -35,6 +35,10 @@
     <Compile Include="pullMonsters_2.py" />
     <Compile Include="pullMonsters.py" />
     <Compile Include="updateSourcesFromReleaseDate.py" />
+    <Compile Include="update_pf2_catalog.py" />
+    <Compile Include="updateEquipment.py" />
+    <Compile Include="updateFeats.py" />
+    <Compile Include="updateSpells.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="buildEquipmentRiAndIndexes.sql" />
