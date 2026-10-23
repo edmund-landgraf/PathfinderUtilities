@@ -14,6 +14,21 @@ from __future__ import annotations
 import argparse
 import os
 import random
+from pathlib import Path
+
+def _load_dotenv() -> None:
+    env_path = Path(__file__).with_name('.env')
+    if not env_path.exists():
+        return
+    for raw in env_path.read_text().splitlines():
+        line = raw.strip()
+        if not line or line.startswith('#') or '=' not in line:
+            continue
+        name, value = line.split('=', 1)
+        os.environ.setdefault(name.strip(), value.strip().strip(chr(34)).strip(chr(39)))
+
+_load_dotenv()
+
 
 import requests
 
@@ -87,38 +102,16 @@ def lookup(monster: tuple[int, str]) -> dict[str, str]:
 
 
 def first_image(query: str) -> tuple[str | None, str]:
-    api_key = os.environ.get("GOOGLE_API_KEY", "").strip()
-    cse_id = os.environ.get("GOOGLE_CSE_ID", "").strip()
-    if api_key and cse_id:
-        response = requests.get(
-            CSE_URL,
-            params={
-                "key": api_key,
-                "cx": cse_id,
-                "q": query,
-                "searchType": "image",
-                "num": 1,
-                "safe": "active",
-            },
-            timeout=30,
-        )
-        if response.status_code != 200:
-            return None, f"Custom Search HTTP {response.status_code}"
-        items = response.json().get("items") or []
-        if not items:
-            return None, "Custom Search returned no image"
-        return str(items[0].get("link") or ""), "Custom Search API"
+    from review_creature_images import search_images
 
-    response = requests.get(
-        SEARCH_URL,
-        params={"udm": "2", "hl": "en", "q": query},
-        headers=HEADERS,
-        timeout=30,
-    )
-    text = response.text.lower()
-    if "unusual traffic" in text or "/sorry/" in response.url or "enablejs" in text:
-        return None, "Google blocked the request. Set GOOGLE_API_KEY and GOOGLE_CSE_ID."
-    return None, f"No image parsed from HTTP {response.status_code}"
+    name = query.removeprefix("pathfinder 2e ").strip()
+    try:
+        hits = search_images(name)
+    except Exception as exc:
+        return None, f"Bing image search failed: {exc}"
+    if not hits:
+        return None, "Bing image search returned no image"
+    return hits[0]["original"], "Bing image search"
 
 
 def print_table(rows: list[dict[str, str]]) -> None:

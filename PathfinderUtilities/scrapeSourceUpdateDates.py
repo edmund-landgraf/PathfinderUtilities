@@ -316,7 +316,7 @@ def load_db_source_counts():
                 continue
 
             cur.execute(f"""
-                SELECT s.SourceBookId, s.Name, COUNT_BIG(*) AS RowCount
+                SELECT s.SourceBookId, s.Name, COUNT_BIG(*) AS [RowCount]
                 FROM {table} t
                 JOIN pf2.SourceBook s ON s.SourceBookId = t.SourceBookId
                 GROUP BY s.SourceBookId, s.Name
