@@ -7,9 +7,9 @@ from mssql_conn import sql_auth
 import logging
 import re
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Any
-from urllib.parse import quote
+from urllib.parse import quote, unquote
 
 import pyodbc
 import requests
@@ -62,6 +62,7 @@ PLACEHOLDER_IMAGE_NAMES = {
     "plant.jpg",
     "spirit.jpg",
     "undead.jpg",
+    "warden.png",
 }
 
 # Distincting by element_display_id asks Demiplane for the newest display
@@ -152,6 +153,7 @@ class DemiplaneCreature:
     source_name: str | None
     family: str | None
     image_url: str | None
+    image_urls: tuple[str, ...] = ()
     stat_html: str | None
     description_html: str | None
     raw: dict[str, Any]
@@ -367,13 +369,16 @@ def demiplane_creature_from_row(row: dict[str, Any]) -> DemiplaneCreature | None
     stat_html = clean(row.get("element_display"))
     description_html = clean(row.get("long_description") or row.get("short_description"))
 
+    image_urls = image_candidate_urls(row)
+
     return DemiplaneCreature(
         name=name,
         level=to_int(row.get("level")),
         slug=slug,
         source_name=clean(row.get("primary_source_name")),
         family=family_name(row.get("creature_family")),
-        image_url=best_image_url(row),
+        image_url=image_urls[0] if image_urls else None,
+        image_urls=image_urls,
         stat_html=stat_html,
         description_html=description_html,
         raw=row,
@@ -560,29 +565,42 @@ def parse_ability_mods(text: str) -> dict[str, int]:
     return result
 
 
-def best_image_url(row: dict[str, Any]) -> str | None:
-    """Prefer main art, fall back to thumbnail, and ignore placeholders."""
+def image_candidate_urls(row: dict[str, Any]) -> tuple[str, ...]:
+    """Full art first, then the thumbnail. Skip trait placeholders."""
 
+    urls: list[str] = []
     for key in ("element_image", "element_thumbnail"):
         raw = clean(row.get(key))
 
         if not raw or is_placeholder_image(raw):
             continue
 
-        return absolute_image_url(raw)
+        url = absolute_image_url(raw)
+        if url not in urls:
+            urls.append(url)
 
-    return None
+    return tuple(urls)
 
 
 def is_placeholder_image(path: str) -> bool:
     """Identify generic family art that should not become MonsterImage data."""
 
-    name = path.rsplit("/", 1)[-1].lower()
+    name = unquote(path).rsplit("/", 1)[-1].lower()
     return name in PLACEHOLDER_IMAGE_NAMES
 
 
 def absolute_image_url(path: str) -> str:
-    """Expand Demiplane image paths to absolute CDN URLs."""
+    """Expand Demiplane image paths to absolute CDN URLs.
+
+    Some element_image values are missing the leading "c" in "compendium".
+    Others are already percent-encoded; quoting those again turns %20 into %2520.
+    """
+
+    path = unquote(path.strip())
+    if path.startswith("ompendium/"):
+        path = "compendium/" + path[len("ompendium/"):]
+    elif path.startswith("/ompendium/"):
+        path = "/compendium/" + path[len("/ompendium/"):]
 
     if path.startswith("http://") or path.startswith("https://"):
         return path
@@ -1068,6 +1086,19 @@ def main() -> None:
 
                     if args.commit:
                         try:
+                            image_data = None
+                            if image_table and creature.image_urls and not args.skip_images:
+                                for candidate in creature.image_urls:
+                                    image_data = download_image(
+                                        session,
+                                        candidate,
+                                        args.maximum_image_size_bytes,
+                                    )
+                                    if image_data:
+                                        if candidate != creature.image_url:
+                                            creature = replace(creature, image_url=candidate)
+                                        break
+
                             monster_id = insert_creature(cursor, creature, lookup_cache)
                             # After a successful insert, later source-book
                             # duplicates in this same run become "existing."
@@ -1076,20 +1107,9 @@ def main() -> None:
                             imported += 1
                             pending_commits += 1
 
-                            if (
-                                image_table
-                                and creature.image_url
-                                and not args.skip_images
-                            ):
-                                image_data = download_image(
-                                    session,
-                                    creature.image_url,
-                                    args.maximum_image_size_bytes,
-                                )
-
-                                if image_data:
-                                    insert_monster_image(cursor, image_table, monster_id, image_data)
-                                    image_imported += 1
+                            if image_data:
+                                insert_monster_image(cursor, image_table, monster_id, image_data)
+                                image_imported += 1
 
                             if pending_commits >= args.commit_batch_size:
                                 connection.commit()
