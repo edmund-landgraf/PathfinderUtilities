@@ -16,21 +16,57 @@ import pyodbc
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from mssql_conn import sql_auth
 
-CONN_STR = (
-    "DRIVER={ODBC Driver 17 for SQL Server};"
-    "SERVER=localhost;"
-    "DATABASE=PathfinderUtil;"
-    + sql_auth()
-    + "TrustServerCertificate=yes;"
-)
-
 AON_TAG_RE = re.compile(r"<%([^%>]*)%>")
 PAGE_RE = re.compile(r"\bpg\.?\s*(\d+)", re.I)
 LINK_RE = re.compile(r"\[([^\]]+)\]\([^)]+\)")
 
 
-def connect():
-    cn = pyodbc.connect(CONN_STR)
+def add_sql_login_arg(parser):
+    parser.add_argument(
+        "--sql-login",
+        action="store_true",
+        help=(
+            "Use MSSQL_USER and MSSQL_PASSWORD instead of Windows trusted connection. "
+            "Required for SQL Server in Docker on Linux."
+        ),
+    )
+
+
+CHUNK_SIZE = 100
+
+
+def note_write(connection, pending, commit):
+    """Count one written row and commit every CHUNK_SIZE rows."""
+    if not commit:
+        return pending
+    pending += 1
+    if pending % CHUNK_SIZE == 0:
+        connection.commit()
+        print(f"Committed {pending} rows.")
+    return pending
+
+
+def finish_writes(connection, pending, commit):
+    if not commit:
+        connection.rollback()
+        print("Preview only. Re-run with --commit to write.")
+        return
+    if pending % CHUNK_SIZE:
+        connection.commit()
+        print(f"Committed {pending} rows.")
+    elif pending == 0:
+        print("Nothing to commit.")
+
+
+def connect(sql_login: bool = False):
+    conn_str = (
+        "DRIVER={ODBC Driver 17 for SQL Server};"
+        "SERVER=localhost;"
+        "DATABASE=PathfinderUtil;"
+        + sql_auth(sql_login)
+        + "TrustServerCertificate=yes;"
+    )
+    cn = pyodbc.connect(conn_str)
     cn.autocommit = False
     return cn
 

@@ -11,10 +11,13 @@ from __future__ import annotations
 import argparse
 
 from common import (
+    add_sql_login_arg,
     clean,
     column_exists,
     connect,
     empty,
+    finish_writes,
+    note_write,
     ensure_column,
     ensure_trait,
     first_existing,
@@ -31,6 +34,7 @@ from common import (
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--commit", action="store_true", help="Write updates.")
+    add_sql_login_arg(parser)
     return parser.parse_args()
 
 
@@ -42,7 +46,7 @@ def requirements_from_src(src):
 
 def main():
     args = parse_args()
-    cn = connect()
+    cn = connect(sql_login=args.sql_login)
     cur = cn.cursor()
     has_requirements = column_exists(cur, "Spell", "Requirements")
     if args.commit and not has_requirements:
@@ -95,14 +99,16 @@ def main():
     )
     rows = cur.fetchall()
     cache = {}
+    pending = 0
     counts = {
-        "rows scanned": len(rows),
-        "Requirements column added": int(args.commit and not column_exists(cur, "Spell", "Requirements")),
-        "Requirements": 0,
+        "rows to update": 0,
         "RawMD": 0,
+        "Requirements": 0,
         "SourcePage": 0,
         "Summary": 0,
         "traits": 0,
+        "rows scanned": len(rows),
+        "Requirements column added": int(args.commit and not column_exists(cur, "Spell", "Requirements")),
     }
     if not has_requirements and not args.commit:
         counts["Requirements column added"] = 1
@@ -131,6 +137,7 @@ def main():
                 sets.append("Summary = ?")
                 params.append(summary)
                 counts["Summary"] += 1
+        requirement_pending = False
         if has_requirements and empty(row[6]):
             requirements = requirements_from_src(src)
             if requirements:
@@ -139,6 +146,12 @@ def main():
                 counts["Requirements"] += 1
         elif not has_requirements and requirements_from_src(src):
             counts["Requirements"] += 1
+            requirement_pending = True
+        trait_names = []
+        if row[7] == 0:
+            trait_names = split_values(first_existing(src, "trait", "traits", "trait_raw"))
+        if sets or trait_names or requirement_pending:
+            counts["rows to update"] += 1
         if sets and args.commit:
             params.append(row.SpellId)
             cur.execute(
@@ -149,22 +162,20 @@ def main():
                 """,
                 params,
             )
-        if row[7] == 0:
-            for trait in split_values(first_existing(src, "trait", "traits", "trait_raw")):
-                counts["traits"] += 1
-                if args.commit:
-                    ensure_trait(cur, "Spell", "SpellId", row.SpellId, trait, cache)
+        wrote = False
+        for trait in trait_names:
+            counts["traits"] += 1
+            if args.commit:
+                ensure_trait(cur, "Spell", "SpellId", row.SpellId, trait, cache)
+                wrote = True
+        if args.commit and (sets or wrote or requirement_pending):
+            pending = note_write(cn, pending, True)
 
     print_plan(
         "Spell backfill (" + ("COMMIT" if args.commit else "PREVIEW") + ")",
         counts,
     )
-    if args.commit:
-        cn.commit()
-        print("Committed.")
-    else:
-        cn.rollback()
-        print("Preview only. Re-run with --commit to write.")
+    finish_writes(cn, pending, args.commit)
     cur.close()
     cn.close()
 

@@ -9,8 +9,11 @@ from __future__ import annotations
 import argparse
 
 from common import (
+    add_sql_login_arg,
     connect,
     empty,
+    finish_writes,
+    note_write,
     ensure_trait,
     first_existing,
     load_json,
@@ -25,12 +28,13 @@ from common import (
 def parse_args():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--commit", action="store_true", help="Write updates.")
+    add_sql_login_arg(parser)
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
-    cn = connect()
+    cn = connect(sql_login=args.sql_login)
     cur = cn.cursor()
     cur.execute(
         """
@@ -58,7 +62,15 @@ def main():
     )
     rows = cur.fetchall()
     cache = {}
-    counts = {"rows scanned": len(rows), "RawMD": 0, "SourcePage": 0, "Summary": 0, "traits": 0}
+    pending = 0
+    counts = {
+        "rows to update": 0,
+        "RawMD": 0,
+        "SourcePage": 0,
+        "Summary": 0,
+        "traits": 0,
+        "rows scanned": len(rows),
+    }
 
     for row in rows:
         src = load_json(row.RawJson)
@@ -84,6 +96,11 @@ def main():
                 sets.append("Summary = ?")
                 params.append(summary)
                 counts["Summary"] += 1
+        trait_names = []
+        if row[6] == 0:
+            trait_names = split_values(first_existing(src, "trait", "traits", "trait_raw"))
+        if sets or trait_names:
+            counts["rows to update"] += 1
         if sets and args.commit:
             params.append(row.EquipmentId)
             cur.execute(
@@ -94,22 +111,20 @@ def main():
                 """,
                 params,
             )
-        if row[6] == 0:
-            for trait in split_values(first_existing(src, "trait", "traits", "trait_raw")):
-                counts["traits"] += 1
-                if args.commit:
-                    ensure_trait(cur, "Equipment", "EquipmentId", row.EquipmentId, trait, cache)
+        wrote = False
+        for trait in trait_names:
+            counts["traits"] += 1
+            if args.commit:
+                ensure_trait(cur, "Equipment", "EquipmentId", row.EquipmentId, trait, cache)
+                wrote = True
+        if args.commit and (sets or wrote):
+            pending = note_write(cn, pending, True)
 
     print_plan(
         "Equipment backfill (" + ("COMMIT" if args.commit else "PREVIEW") + ")",
         counts,
     )
-    if args.commit:
-        cn.commit()
-        print("Committed.")
-    else:
-        cn.rollback()
-        print("Preview only. Re-run with --commit to write.")
+    finish_writes(cn, pending, args.commit)
     cur.close()
     cn.close()
 
