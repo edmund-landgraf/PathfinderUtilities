@@ -12,5 +12,5 @@ def sql_auth() -> str:
     if sys.platform == "win32":
         return "Trusted_Connection=yes;"
     user = os.environ.get("MSSQL_USER", "sa")
-    password = os.environ.get("MSSQL_PASSWORD", "")
+    password = os.environ.get("MSSQL_PASSWORD", "YourStrong!Password123")
     return f"UID={user};PWD={password};"
