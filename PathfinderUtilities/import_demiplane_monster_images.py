@@ -8,7 +8,7 @@ import re
 import time
 from dataclasses import dataclass
 from typing import Any
-from urllib.parse import quote
+from urllib.parse import quote, unquote
 
 import pyodbc
 import requests
@@ -37,6 +37,7 @@ PLACEHOLDER_IMAGE_NAMES = {
     "plant.jpg",
     "spirit.jpg",
     "undead.jpg",
+    "warden.png",
 }
 
 CREATURE_QUERY = """
@@ -86,7 +87,7 @@ class DemiplaneCreature:
     name: str
     level: int | None
     slug: str
-    image_url: str
+    image_urls: tuple[str, ...]
     source_name: str | None
 
 
@@ -308,9 +309,9 @@ def demiplane_creature_from_row(row: dict[str, Any]) -> DemiplaneCreature | None
     name = clean(row.get("name"))
     display = row.get("elementDisplayByElementDisplayId") or {}
     slug = clean(display.get("slug"))
-    image_url = best_image_url(row)
+    image_urls = image_candidate_urls(row)
 
-    if not name or not slug or not image_url:
+    if not name or not slug or not image_urls:
         return None
 
     level = row.get("level")
@@ -319,7 +320,7 @@ def demiplane_creature_from_row(row: dict[str, Any]) -> DemiplaneCreature | None
         name=name,
         level=int(level) if level is not None else None,
         slug=slug,
-        image_url=image_url,
+        image_urls=image_urls,
         source_name=clean(row.get("primary_source_name")),
     )
 
@@ -332,24 +333,36 @@ def clean(value: Any) -> str | None:
     return value or None
 
 
-def best_image_url(row: dict[str, Any]) -> str | None:
+def image_candidate_urls(row: dict[str, Any]) -> tuple[str, ...]:
+    """Full art first, then the thumbnail. Skip trait placeholders."""
+    urls: list[str] = []
     for key in ("element_image", "element_thumbnail"):
         raw = clean(row.get(key))
-
         if not raw or is_placeholder_image(raw):
             continue
-
-        return absolute_image_url(raw)
-
-    return None
+        url = absolute_image_url(raw)
+        if url not in urls:
+            urls.append(url)
+    return tuple(urls)
 
 
 def is_placeholder_image(path: str) -> bool:
-    name = path.rsplit("/", 1)[-1].lower()
+    name = unquote(path).rsplit("/", 1)[-1].lower()
     return name in PLACEHOLDER_IMAGE_NAMES
 
 
 def absolute_image_url(path: str) -> str:
+    """Repair Demiplane paths, then encode once.
+
+    Some element_image values are missing the leading "c" in "compendium".
+    Others are already percent-encoded; quoting those again turns %20 into %2520.
+    """
+    path = unquote(path.strip())
+    if path.startswith("ompendium/"):
+        path = "compendium/" + path[len("ompendium/"):]
+    elif path.startswith("/ompendium/"):
+        path = "/compendium/" + path[len("/ompendium/"):]
+
     if path.startswith("http://") or path.startswith("https://"):
         return path
 
@@ -369,6 +382,44 @@ def matching_local_monsters(
         return exact
 
     return by_name.get(normalized, [])
+
+
+def working_image_url(
+    session: requests.Session,
+    image_urls: tuple[str, ...],
+) -> str | None:
+    """First candidate that answers as an image. Full art is preferred over the thumbnail."""
+    for image_url in image_urls:
+        try:
+            response = session.head(
+                image_url,
+                headers={
+                    "User-Agent": (
+                        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                        "AppleWebKit/537.36 (KHTML, like Gecko) "
+                        "Chrome/149.0 Safari/537.36"
+                    ),
+                    "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8",
+                },
+                timeout=60,
+                allow_redirects=True,
+            )
+        except requests.RequestException:
+            logging.warning("Image URL failed, trying fallback: %s", image_url)
+            continue
+
+        if response.status_code >= 400:
+            logging.warning("Image URL returned %s, trying fallback: %s", response.status_code, image_url)
+            continue
+
+        content_type = (response.headers.get("Content-Type") or "").lower()
+        if content_type and not content_type.startswith("image/") and "octet-stream" not in content_type:
+            logging.warning("Image URL was %s, trying fallback: %s", content_type, image_url)
+            continue
+
+        return image_url
+
+    return None
 
 
 def download_image(
@@ -479,13 +530,25 @@ def main() -> None:
                     matched += len(locals_to_update)
 
                     for local_monster in locals_to_update:
+                        image_url = working_image_url(session, creature.image_urls)
+                        if not image_url:
+                            skipped_no_image += 1
+                            logging.warning(
+                                "No working image for MonsterID %s | %s L%s | tried %s",
+                                local_monster.monster_id,
+                                local_monster.name,
+                                local_monster.level,
+                                ", ".join(creature.image_urls),
+                            )
+                            continue
+
                         logging.info(
                             "%sMATCH MonsterID %s | %s L%s | %s",
                             "DRY-RUN " if not args.commit else "",
                             local_monster.monster_id,
                             local_monster.name,
                             local_monster.level,
-                            creature.image_url,
+                            image_url,
                         )
 
                         if not args.commit:
@@ -495,14 +558,24 @@ def main() -> None:
                         try:
                             image_data = download_image(
                                 session,
-                                creature.image_url,
+                                image_url,
                                 args.maximum_image_size_bytes,
                             )
+                        except requests.RequestException:
+                            skipped_no_image += 1
+                            logging.exception(
+                                "Download failed MonsterID %s | %s | %s",
+                                local_monster.monster_id,
+                                local_monster.name,
+                                image_url,
+                            )
+                            continue
 
-                            if image_data is None:
-                                skipped_no_image += 1
-                                continue
+                        if image_data is None:
+                            skipped_no_image += 1
+                            continue
 
+                        try:
                             insert_monster_image(
                                 cursor,
                                 image_table,
@@ -527,7 +600,7 @@ def main() -> None:
                                 "Failed MonsterID %s | %s | %s",
                                 local_monster.monster_id,
                                 local_monster.name,
-                                creature.image_url,
+                                image_url,
                             )
 
                         if args.max_imports is not None and inserted >= args.max_imports:
