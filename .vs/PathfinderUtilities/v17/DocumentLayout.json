@@ -3,32 +3,24 @@
   "WorkspaceRootPath": "D:\\repos\\edmund-landgraf\\PathfinderUtilities\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{F0F48458-4C90-4308-8DEC-540C7FBC9470}|PathfinderUtilities\\PathfinderUtilities.pyproj|D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\createEquipmentTables.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}",
-      "RelativeMoniker": "D:0:0:{F0F48458-4C90-4308-8DEC-540C7FBC9470}|PathfinderUtilities\\PathfinderUtilities.pyproj|solutionrelative:PathfinderUtilities\\createEquipmentTables.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\ImageUploader\\pf2_monster_image_loader.py||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:PathfinderUtilities\\ImageUploader\\pf2_monster_image_loader.py||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F0F48458-4C90-4308-8DEC-540C7FBC9470}|PathfinderUtilities\\PathfinderUtilities.pyproj|D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\pullEquipment.py||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{F0F48458-4C90-4308-8DEC-540C7FBC9470}|PathfinderUtilities\\PathfinderUtilities.pyproj|solutionrelative:PathfinderUtilities\\pullEquipment.py||{8B382828-6202-11D1-8870-0000F87579D2}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\makeThumbnails.py||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:PathfinderUtilities\\makeThumbnails.py||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F0F48458-4C90-4308-8DEC-540C7FBC9470}|PathfinderUtilities\\PathfinderUtilities.pyproj|D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\test2.py||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{F0F48458-4C90-4308-8DEC-540C7FBC9470}|PathfinderUtilities\\PathfinderUtilities.pyproj|solutionrelative:PathfinderUtilities\\test2.py||{8B382828-6202-11D1-8870-0000F87579D2}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\import_monster_images.py||{8B382828-6202-11D1-8870-0000F87579D2}|",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:PathfinderUtilities\\import_monster_images.py||{8B382828-6202-11D1-8870-0000F87579D2}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F0F48458-4C90-4308-8DEC-540C7FBC9470}|PathfinderUtilities\\PathfinderUtilities.pyproj|D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\pullSpells.py||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{F0F48458-4C90-4308-8DEC-540C7FBC9470}|PathfinderUtilities\\PathfinderUtilities.pyproj|solutionrelative:PathfinderUtilities\\pullSpells.py||{8B382828-6202-11D1-8870-0000F87579D2}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\1e\\fixBirds.py||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:PathfinderUtilities\\1e\\fixBirds.py||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F0F48458-4C90-4308-8DEC-540C7FBC9470}|PathfinderUtilities\\PathfinderUtilities.pyproj|D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\test1.py||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{F0F48458-4C90-4308-8DEC-540C7FBC9470}|PathfinderUtilities\\PathfinderUtilities.pyproj|solutionrelative:PathfinderUtilities\\test1.py||{8B382828-6202-11D1-8870-0000F87579D2}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F0F48458-4C90-4308-8DEC-540C7FBC9470}|PathfinderUtilities\\PathfinderUtilities.pyproj|D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\pullMonsters_3.py||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{F0F48458-4C90-4308-8DEC-540C7FBC9470}|PathfinderUtilities\\PathfinderUtilities.pyproj|solutionrelative:PathfinderUtilities\\pullMonsters_3.py||{8B382828-6202-11D1-8870-0000F87579D2}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F0F48458-4C90-4308-8DEC-540C7FBC9470}|PathfinderUtilities\\PathfinderUtilities.pyproj|D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\createEquipmentTables.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}|CodeFrame",
-      "RelativeMoniker": "D:0:0:{F0F48458-4C90-4308-8DEC-540C7FBC9470}|PathfinderUtilities\\PathfinderUtilities.pyproj|solutionrelative:PathfinderUtilities\\createEquipmentTables.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}|CodeFrame"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\1e\\fixbeasts.py||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:PathfinderUtilities\\1e\\fixbeasts.py||{8B382828-6202-11D1-8870-0000F87579D2}"
     }
   ],
   "DocumentGroupContainers": [
@@ -37,21 +29,9 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "DockedWidth": 1273,
+          "SelectedChildIndex": 6,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "createEquipmentTables.sql ",
-              "DocumentMoniker": "D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\createEquipmentTables.sql",
-              "RelativeDocumentMoniker": "PathfinderUtilities\\createEquipmentTables.sql",
-              "ToolTip": "D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\createEquipmentTables.sql",
-              "RelativeToolTip": "PathfinderUtilities\\createEquipmentTables.sql",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2026-06-11T00:06:00.226Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{74946827-37a0-11d2-a273-00c04f8ef4ff}"
@@ -66,69 +46,98 @@
             },
             {
               "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
               "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "pf2_monster_image_loader.py",
+              "DocumentMoniker": "D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\ImageUploader\\pf2_monster_image_loader.py",
+              "RelativeDocumentMoniker": "PathfinderUtilities\\ImageUploader\\pf2_monster_image_loader.py",
+              "ToolTip": "D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\ImageUploader\\pf2_monster_image_loader.py",
+              "RelativeToolTip": "PathfinderUtilities\\ImageUploader\\pf2_monster_image_loader.py",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
+              "WhenOpened": "2026-10-06T14:39:33.183Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "pullEquipment.py",
-              "DocumentMoniker": "D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\pullEquipment.py",
-              "RelativeDocumentMoniker": "PathfinderUtilities\\pullEquipment.py",
-              "ToolTip": "D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\pullEquipment.py",
-              "RelativeToolTip": "PathfinderUtilities\\pullEquipment.py",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAmAAAAAAAAAA==",
+              "Title": "makeThumbnails.py",
+              "DocumentMoniker": "D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\makeThumbnails.py",
+              "RelativeDocumentMoniker": "PathfinderUtilities\\makeThumbnails.py",
+              "ToolTip": "D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\makeThumbnails.py",
+              "RelativeToolTip": "PathfinderUtilities\\makeThumbnails.py",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
-              "WhenOpened": "2026-06-10T23:37:06.066Z",
+              "WhenOpened": "2026-08-18T19:44:58.792Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "import_monster_images.py",
+              "DocumentMoniker": "D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\import_monster_images.py",
+              "RelativeDocumentMoniker": "PathfinderUtilities\\import_monster_images.py",
+              "ToolTip": "D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\import_monster_images.py",
+              "RelativeToolTip": "PathfinderUtilities\\import_monster_images.py",
+              "ViewState": "AgIAAEgAAAAAAAAAAIAwwG8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
+              "WhenOpened": "2026-07-15T04:59:46.632Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "pullSpells.py",
-              "DocumentMoniker": "D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\pullSpells.py",
-              "RelativeDocumentMoniker": "PathfinderUtilities\\pullSpells.py",
-              "ToolTip": "D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\pullSpells.py",
-              "RelativeToolTip": "PathfinderUtilities\\pullSpells.py",
-              "ViewState": "AgIAAIgCAAAAAAAAAAAjwJICAAAXAAAAAAAAAA==",
+              "Title": "fixBirds.py",
+              "DocumentMoniker": "D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\1e\\fixBirds.py",
+              "RelativeDocumentMoniker": "PathfinderUtilities\\1e\\fixBirds.py",
+              "ToolTip": "D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\1e\\fixBirds.py",
+              "RelativeToolTip": "PathfinderUtilities\\1e\\fixBirds.py",
+              "ViewState": "AgIAAMgAAAAAAAAAAAAIwNMAAAAnAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
-              "WhenOpened": "2026-06-10T18:56:58.96Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "test2.py",
-              "DocumentMoniker": "D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\test2.py",
-              "RelativeDocumentMoniker": "PathfinderUtilities\\test2.py",
-              "ToolTip": "D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\test2.py",
-              "RelativeToolTip": "PathfinderUtilities\\test2.py",
-              "ViewState": "AgIAAD0AAAAAAAAAAAAmwEoAAAAMAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
-              "WhenOpened": "2026-06-09T23:08:38.244Z",
+              "WhenOpened": "2026-07-03T10:47:30.904Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "test1.py",
-              "DocumentMoniker": "D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\test1.py",
-              "RelativeDocumentMoniker": "PathfinderUtilities\\test1.py",
-              "ToolTip": "D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\test1.py",
-              "RelativeToolTip": "PathfinderUtilities\\test1.py",
-              "ViewState": "AgIAABMAAAAAAAAAAAAmwCsAAAAVAAAAAAAAAA==",
+              "Title": "fixbeasts.py",
+              "DocumentMoniker": "D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\1e\\fixbeasts.py",
+              "RelativeDocumentMoniker": "PathfinderUtilities\\1e\\fixbeasts.py",
+              "ToolTip": "D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\1e\\fixbeasts.py",
+              "RelativeToolTip": "PathfinderUtilities\\1e\\fixbeasts.py",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAIwCsAAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
-              "WhenOpened": "2026-06-09T23:06:34.871Z"
+              "WhenOpened": "2026-07-03T09:57:36.613Z",
+              "EditorCaption": ""
+            }
+          ]
+        },
+        {
+          "DockedWidth": 1138,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
             },
             {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "pullMonsters_3.py",
-              "DocumentMoniker": "D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\pullMonsters_3.py",
-              "RelativeDocumentMoniker": "PathfinderUtilities\\pullMonsters_3.py",
-              "ToolTip": "D:\\repos\\edmund-landgraf\\PathfinderUtilities\\PathfinderUtilities\\pullMonsters_3.py",
-              "RelativeToolTip": "PathfinderUtilities\\pullMonsters_3.py",
-              "ViewState": "AgIAAKoBAAAAAAAAAAAAAAoCAAAIAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002457|",
-              "WhenOpened": "2026-06-09T22:25:30.836Z"
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
             }
           ]
         }
