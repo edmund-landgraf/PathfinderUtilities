@@ -256,13 +256,18 @@ def main() -> int:
         default=BACKUP_DIR,
         help=f"Folder for original files before replace (default: {BACKUP_DIR})",
     )
+    parser.add_argument(
+        "--no-backup",
+        action="store_true",
+        help="Update the database without writing the original file to disk.",
+    )
     args = parser.parse_args()
 
     print(f"Server:   {SERVER}")
     print(f"Database: {DATABASE}")
     print(f"Source:   >= {mb(SOURCE_MIN_BYTES)}")
     print(f"Target:   {mb(TARGET_MIN_BYTES)} – {mb(TARGET_MAX_BYTES)}")
-    print(f"Backup:   {args.backup_dir}")
+    print("Backup:   off" if args.no_backup else f"Backup:   {args.backup_dir}")
     print("Mode:     apply" if args.apply else "Mode:     dry-run")
     print()
 
@@ -313,16 +318,17 @@ def main() -> int:
         )
 
         if args.apply:
-            try:
-                backup_path = backup_original(monster_id, name, original, args.backup_dir)
-            except OSError as exc:
-                failed += 1
-                changed -= 1
-                old_total -= old_size
-                new_total -= new_size
-                print(f"FAIL  {name}: backup not written ({exc}); database left unchanged")
-                continue
-            print(f"      saved {backup_path}")
+            if not args.no_backup:
+                try:
+                    backup_path = backup_original(monster_id, name, original, args.backup_dir)
+                except OSError as exc:
+                    failed += 1
+                    changed -= 1
+                    old_total -= old_size
+                    new_total -= new_size
+                    print(f"FAIL  {name}: backup not written ({exc}); database left unchanged")
+                    continue
+                print(f"      saved {backup_path}")
             thumb = create_thumbnail(img if scale >= 0.999 else _resized(img, scale))
             save_image(conn, monster_id, new_bytes, thumb)
             conn.commit()
